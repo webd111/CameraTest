@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/new/jpg"/>
+    <qresource prefix="/">
+        <file>icon/IconCalibration.png</file>
+        <file>icon/IconCamera.png</file>
+        <file>icon/IconPause.png</file>
+        <file>icon/IconApplySetting.png</file>
+        <file>icon/IconPostprocess.png</file>
+        <file>icon/IconDepthMap.png</file>
+        <file>icon/IconMatching.png</file>
+        <file>icon/IconMatchingInverse.png</file>
+        <file>icon/IconSave.png</file>
+        <file>icon/IconRefresh.png</file>
+        <file>timg.jpg</file>
+        <file>timg.png</file>
+    </qresource>
+</RCC>
