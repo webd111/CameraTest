@@ -163,7 +163,7 @@ void ImgAcqThread::run()
             {
                 webCamera->sendCommand(0x01);           // cmd: send
                 while(!webCamera->grabSocket() && !isInterruptionRequested());
-                webCamera->sendCommand(0x02);           // cmd: received
+//                webCamera->sendCommand(0x02);           // cmd: received
                 if (!webCamera->getImage(img))
                     continue;
 
