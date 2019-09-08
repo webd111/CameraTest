@@ -159,7 +159,7 @@
              </font>
             </property>
             <property name="mouseTracking">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;图像接口&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -176,7 +176,7 @@
              </font>
             </property>
             <property name="mouseTracking">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;设备&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -207,7 +207,7 @@
              </font>
             </property>
             <property name="mouseTracking">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;图像宽度&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -252,7 +252,7 @@
              </font>
             </property>
             <property name="mouseTracking">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;端口&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -289,7 +289,7 @@
              </font>
             </property>
             <property name="mouseTracking">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;图像高度&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -334,7 +334,7 @@
              </font>
             </property>
             <property name="mouseTracking">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;类型&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -365,7 +365,7 @@
              </font>
             </property>
             <property name="mouseTracking">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;数据包长&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -410,7 +410,7 @@
              </font>
             </property>
             <property name="mouseTracking">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;/&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -450,7 +450,7 @@
              </font>
             </property>
             <property name="mouseTracking">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;图像通道&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1294,7 +1294,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="Statistics">
        <property name="autoFillBackground">
@@ -1329,7 +1329,7 @@
               </font>
              </property>
              <property name="mouseTracking">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;时间[ms]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1383,7 +1383,7 @@
               </font>
              </property>
              <property name="mouseTracking">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;帧率[fps]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1455,7 +1455,7 @@
               </font>
              </property>
              <property name="mouseTracking">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;时间[ms]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1509,7 +1509,7 @@
               </font>
              </property>
              <property name="mouseTracking">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;帧率[fps]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1581,7 +1581,7 @@
               </font>
              </property>
              <property name="mouseTracking">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;时间[ms]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1635,7 +1635,7 @@
               </font>
              </property>
              <property name="mouseTracking">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;帧率[fps]&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -2172,7 +2172,7 @@
      <x>0</x>
      <y>0</y>
      <width>1104</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="font">

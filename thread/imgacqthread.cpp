@@ -151,9 +151,12 @@ void ImgAcqThread::run()
         {
             double time = 0;
 
-//            QString info[5] = {params.cameraInterface, QString::fromStdString(params.ip_client), QString::number(params.port_client),
-//                               QString::fromStdString(params.ip_client), QString::number(params.port_client)};
-//            emit ImgAcqInfo(cameraIndex, info);
+
+            QString info[4] = {params.cameraInterface,
+                               "",
+                               QString::fromStdString(params.ip_client)+QString("::")+QString::number(params.port_client),
+                               QString::fromStdString(params.ip_server)+QString("::")+QString::number(params.port_server)};
+            emit ImgAcqInfo(cameraIndex, info);
 
             qDebug() << "ImgAcqThread::run() parameters are valid.";
 

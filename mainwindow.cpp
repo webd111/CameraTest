@@ -422,7 +422,8 @@ void MainWindow::updateInformation(int cameraIndex, QString* cameraInfo)
     QLabel* labelDevice = nullptr;
     QLabel* labelPort = nullptr;
     QLabel* labelType = nullptr;
-    QLabel* labellabelIp = nullptr;
+    QLabel* labelLabelIp = nullptr;
+    QLabel* labelLabelCameraIp = nullptr;
     qDebug() << cameraIndex;
     qDebug() << cameraInfo[0] << cameraInfo[1] << cameraInfo[2] << cameraInfo[3];
     switch (cameraIndex)
@@ -432,21 +433,24 @@ void MainWindow::updateInformation(int cameraIndex, QString* cameraInfo)
         labelDevice = ui->labelInfoDeviceShow1;
         labelPort = ui->labelInfoPortShow1;
         labelType = ui->labelInfoTypeShow1;
-        labellabelIp = ui->labelInfoType1;
+        labelLabelIp = ui->labelInfoPort1;
+        labelLabelCameraIp = ui->labelInfoType1;
         break;
     case 2:
         labelInterface = ui->labelInfoInterfaceShow2;
         labelDevice = ui->labelInfoDeviceShow2;
         labelPort = ui->labelInfoPortShow2;
         labelType = ui->labelInfoTypeShow2;
-        labellabelIp = ui->labelInfoType2;
+        labelLabelIp = ui->labelInfoPort2;
+        labelLabelCameraIp = ui->labelInfoType2;
         break;
     case 3:
         labelInterface = ui->labelInfoInterfaceShow3;
         labelDevice = ui->labelInfoDeviceShow3;
         labelPort = ui->labelInfoPortShow3;
         labelType = ui->labelInfoTypeShow3;
-        labellabelIp = ui->labelInfoType3;
+        labelLabelIp = ui->labelInfoPort3;
+        labelLabelCameraIp = ui->labelInfoType3;
         break;
     default:
         break;
@@ -456,14 +460,19 @@ void MainWindow::updateInformation(int cameraIndex, QString* cameraInfo)
     labelDevice->setText(cameraInfo[1]);
     if(cameraInfo[0] == USBCameraInterface || cameraInfo[0] == "GigEVision2")
     {
-        labellabelIp->setText(QString::fromLocal8Bit("相机类型："));
-        labellabelIp->setAlignment(Qt::AlignCenter);
+        labelLabelIp->setText(QString::fromLocal8Bit("端口："));
+        labelLabelIp->setAlignment(Qt::AlignCenter);
+        labelLabelCameraIp->setText(QString::fromLocal8Bit("相机类型："));
+        labelLabelCameraIp->setAlignment(Qt::AlignCenter);
         labelPort->setText(cameraInfo[2]);
         labelType->setText(cameraInfo[3]);
     }
     else if(cameraInfo[0] == "UserDefined")
     {
-        labellabelIp->setText(QString::fromLocal8Bit("IP地址："));
+        labelLabelIp->setText(QString::fromLocal8Bit("本机IP及端口："));
+        labelLabelIp->setAlignment(Qt::AlignCenter);
+        labelLabelCameraIp->setText(QString::fromLocal8Bit("相机IP及端口："));
+        labelLabelCameraIp->setAlignment(Qt::AlignCenter);
         labelPort->setText(cameraInfo[2]);
         labelType->setText(cameraInfo[3]);
     }
