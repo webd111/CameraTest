@@ -24,7 +24,8 @@ bool HImage2QImage(HalconCpp::HImage &from, QImage &to)
     switch(channels[0].I())
     {
     case 1:
-        format = QImage::Format_Grayscale8;
+//        format = QImage::Format_Grayscale8;
+        format = QImage::Format_Indexed8;
         break;
     case 3:
         format = QImage::Format_RGB32;
@@ -42,8 +43,11 @@ bool HImage2QImage(HalconCpp::HImage &from, QImage &to)
     HString Type;
     if(channels[0].I() == 1)
     {
-        unsigned char * pSrc = reinterpret_cast<unsigned char *>( from.GetImagePointer1(&Type, &width, &height) );
-        memcpy( to.bits(), pSrc, static_cast<size_t>(width) * static_cast<size_t>(height) );
+        unsigned char* pSrc = reinterpret_cast<unsigned char *>( from.GetImagePointer1(&Type, &width, &height) );
+//        memcpy( to.bits(), pSrc, static_cast<size_t>(width) * static_cast<size_t>(height) );
+        for (int row = 0; row < height; ++row) {
+            memcpy(to.scanLine(row), pSrc + row * width, static_cast<size_t>(width));
+        }
         return true;
     }
     else if(channels[0].I() == 3)

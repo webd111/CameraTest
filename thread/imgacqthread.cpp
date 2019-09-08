@@ -61,9 +61,9 @@ void ImgAcqThread::run()
     {
         // Check parameters
         if(cameraIndex != 0 &&
-                halconCamera->params.device != "" &&
+                halconCamera->params.device != ""/* &&
                 halconCamera->params.port != -5 &&
-                halconCamera->params.cameraType != "")
+                halconCamera->params.cameraType != ""*/)
         {
             qDebug() << "ImgAcqThread::run() parameters are valid.";
             try
@@ -111,7 +111,6 @@ void ImgAcqThread::run()
                         locker.unlock();
 
                         // Display image
-
 
                         emit ImgAcqTime(cameraIndex, time);    // Emit signal for passing parameters
                     }

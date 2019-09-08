@@ -361,6 +361,8 @@ void MainWindow::updateImage(int idx)
     locker.unlock();
     HImage2QImage(img, qimg);
     qlabel_ptr[idx-1]->setPixmap(QPixmap::fromImage(qimg));
+//    img.WriteImage("jpg", 0, "img");
+//    qDebug() << "Save flag:" << qimg.save("img.jpg");
 #endif
 }
 
