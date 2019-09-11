@@ -70,3 +70,82 @@ HImage IplImageToHImage(cv::Mat& pImage)
     }
     return img;
 }
+
+HImage IplImageRGBToHImage(cv::Mat& pImage)
+{
+    HImage img;
+    int height = pImage.rows;
+    int width = pImage.cols;
+    if (3 == pImage.channels())
+    {
+        cv::Mat pImageRed, pImageGreen, pImageBlue;
+        std::vector<cv::Mat> sbgr;
+        split(pImage, sbgr);
+        pImageRed = sbgr[0];
+        pImageGreen = sbgr[1];
+        pImageBlue = sbgr[2];
+        int length = pImage.rows * pImage.cols;
+        uchar *dataBlue = new uchar[length];
+        uchar *dataGreen = new uchar[length];
+        uchar *dataRed = new uchar[length];
+        memcpy(dataRed, pImageRed.data, width*height);
+        memcpy(dataGreen, pImageGreen.data, width*height);
+        memcpy(dataBlue, pImageBlue.data, width*height);
+        img.GenImage3(HString("byte"), width, height, dataRed, dataGreen, dataBlue);
+        delete[] dataRed;
+        delete[] dataGreen;
+        delete[] dataBlue;
+    }
+    else if (1 == pImage.channels())
+    {
+        uchar *dataGray = new uchar[width * height];
+        memcpy(dataGray, pImage.data, width * height);
+        img.GenImage1(HString("byte"), width, height, dataGray);
+        delete[] dataGray;
+    }
+    return img;
+}
+
+void IplImageRGBSplitToHImage(cv::Mat& pImage, HImage& img1, HImage& img2)
+{
+    int height = pImage.rows;
+    int width = pImage.cols;
+    if (3 == pImage.channels())
+    {
+        cv::Mat pImageRed, pImageGreen, pImageBlue;
+        std::vector<cv::Mat> sbgr;
+        split(pImage, sbgr);
+        pImageRed = sbgr[0];
+        pImageGreen = sbgr[1];
+        pImageBlue = sbgr[2];
+        int length = pImage.rows * pImage.cols;
+        uchar *dataBlue = new uchar[length/2];
+        uchar *dataGreen = new uchar[length/2];
+        uchar *dataRed = new uchar[length/2];
+        for (int i = 0; i < 2; ++i) {
+            memcpy(dataRed, pImageRed.data+i*length/2, length/2);
+            memcpy(dataGreen, pImageGreen.data+i*length/2, length/2);
+            memcpy(dataBlue, pImageBlue.data+i*length/2, length/2);
+            if (i==0)
+                img1.GenImage3(HString("byte"), width, height/2, dataRed, dataGreen, dataBlue);
+            else
+                img2.GenImage3(HString("byte"), width, height/2, dataRed, dataGreen, dataBlue);
+        }
+        delete[] dataRed;
+        delete[] dataGreen;
+        delete[] dataBlue;
+    }
+    else if (1 == pImage.channels())
+    {
+        uchar *dataGray = new uchar[width * height / 2];
+        for (int i = 0; i < 2; ++i) {
+            memcpy(dataGray, pImage.data+i * width*height/2, width * height/2);
+            if (i==0)
+                img1.GenImage1(HString("byte"), width, height/2, dataGray);
+            else
+                img2.GenImage1(HString("byte"), width, height/2, dataGray);
+        }
+        delete[] dataGray;
+    }
+    return;
+}

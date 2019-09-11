@@ -481,16 +481,16 @@ void MainWindow::updateInformation(int cameraIndex, QString* cameraInfo)
 
 void MainWindow::on_actionSave_triggered()
 {
-//    HImage img;
-//    QMutexLocker locker(&m);
-//    if(hImageMatchPair.IsInitialized())
-//        img = hImageMatchPair;
-//    else
-//        return;
-//    locker.unlock();
-//    char* path = QString(QString("C:/Users/12257/Desktop/img") + QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
-//    qDebug() << "path:" << path;
-//    img.WriteImage("png", 0, path);
+    HImage img;
+    QMutexLocker locker(m_ptr[1]);
+    if(hImageSrc1.IsInitialized())
+        img = hImageSrc1;
+    else
+        return;
+    locker.unlock();
+    char* path = QString(QString("C:/Users/12257/Desktop/img") + QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
+    qDebug() << "path:" << path;
+    img.WriteImage("png", 0, path);
 }
 
 void MainWindow::on_actionRefresh_triggered()
@@ -559,10 +559,10 @@ void MainWindow::on_comboBoxCameraInterface1_currentTextChanged(const QString &a
         ui->labelCameraPort1_2->setText(QString::fromLocal8Bit(""));
         ui->labelCameraPort1_2->setAlignment(Qt::AlignCenter);
 
-        ui->comboBoxCameraDevice1->clear();
-        ui->comboBoxCameraPort1->clear();
-        ui->comboBoxCameraType1->clear();
-        ui->comboBoxCameraPort1_2->clear();
+//        ui->comboBoxCameraDevice1->clear();
+//        ui->comboBoxCameraPort1->clear();
+//        ui->comboBoxCameraType1->clear();
+//        ui->comboBoxCameraPort1_2->clear();
     }
     else if(arg1 == "GigEVision2")
     {
@@ -586,10 +586,10 @@ void MainWindow::on_comboBoxCameraInterface1_currentTextChanged(const QString &a
         ui->labelCameraPort1_2->setText(QString::fromLocal8Bit(""));
         ui->labelCameraPort1_2->setAlignment(Qt::AlignCenter);
 
-        ui->comboBoxCameraDevice1->clear();
-        ui->comboBoxCameraPort1->clear();
-        ui->comboBoxCameraType1->clear();
-        ui->comboBoxCameraPort1_2->clear();
+//        ui->comboBoxCameraDevice1->clear();
+//        ui->comboBoxCameraPort1->clear();
+//        ui->comboBoxCameraType1->clear();
+//        ui->comboBoxCameraPort1_2->clear();
     }
     else if(arg1 == "UserDefined")
     {
@@ -604,6 +604,12 @@ void MainWindow::on_comboBoxCameraInterface1_currentTextChanged(const QString &a
         ui->comboBoxCameraPort1->setEditable(true);
         ui->comboBoxCameraType1->setEditable(true);
 
+//        ui->comboBoxCameraPort1->addItem(QString("5001"));
+//        ui->comboBoxCameraType1->addItem(QString("192.168.1.10"));
+//        ui->comboBoxCameraPort1_2->addItem(QString("5001"));
+
+//        qDebug() << "asdfasdf";
+
         ui->labelCameraDevice1->setText(QString::fromLocal8Bit("本机IP"));
         ui->labelCameraDevice1->setAlignment(Qt::AlignCenter);
         ui->labelCameraType1->setText(QString::fromLocal8Bit("相机IP"));
@@ -613,10 +619,10 @@ void MainWindow::on_comboBoxCameraInterface1_currentTextChanged(const QString &a
         ui->labelCameraPort1_2->setText(QString::fromLocal8Bit("相机端口"));
         ui->labelCameraPort1_2->setAlignment(Qt::AlignCenter);
 
-        ui->comboBoxCameraDevice1->clear();
-        ui->comboBoxCameraPort1->clear();
-        ui->comboBoxCameraType1->clear();
-        ui->comboBoxCameraPort1_2->clear();
+//        ui->comboBoxCameraDevice1->clear();
+//        ui->comboBoxCameraPort1->clear();
+//        ui->comboBoxCameraType1->clear();
+//        ui->comboBoxCameraPort1_2->clear();
     }
 }
 
@@ -654,8 +660,8 @@ void MainWindow::on_comboBoxCameraInterface2_currentTextChanged(const QString &a
         ui->labelCameraType2->setAlignment(Qt::AlignCenter);
         ui->comboBoxCameraDevice2->clear();
         ui->comboBoxCameraPort2->clear();
-        ui->comboBoxCameraPort2->setEditable(true);
         ui->comboBoxCameraType2->clear();
+        ui->comboBoxCameraPort2->setEditable(true);
         ui->comboBoxCameraType2->setEditable(true);
     }
 }
@@ -720,8 +726,8 @@ void MainWindow::on_comboBoxCameraDevice1_currentTextChanged(const QString &text
     }
     else if(ui->comboBoxCameraInterface1->currentText() == "UserDefined")
     {
-        ui->comboBoxCameraPort1->clear();
-        ui->comboBoxCameraType1->clear();
+//        ui->comboBoxCameraPort1->clear();
+//        ui->comboBoxCameraType1->clear();
     }
 }
 

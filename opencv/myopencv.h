@@ -1,7 +1,6 @@
 #ifndef MYOPENCV_H
 #define MYOPENCV_H
 
-
 #ifdef WIN32
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -18,5 +17,7 @@ using namespace HalconCpp;
 
 extern HImage IplImageToHImage(cv::Mat& pImage);
 extern cv::Mat HImageToIplImage(HImage& img);
+extern HImage IplImageRGBToHImage(cv::Mat& pImage);
+extern void IplImageRGBSplitToHImage(cv::Mat& pImage, HImage& img1, HImage& img2);
 
 #endif

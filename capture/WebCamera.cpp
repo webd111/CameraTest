@@ -86,6 +86,7 @@ bool WebCamera::getImage(Mat& _img)
         QMutexLocker locker(&m_image);
         isGrabbed = false;
         image.copyTo(_img);
+//        cvtColor(_img, _img, COLOR_RGB2BGR);
         locker.unlock();
         return true;       // Object has been copied
     }
@@ -121,6 +122,8 @@ bool WebCamera::grabSocket()
 //        qDebug() << "ret = " << ret;
         return false;
     }
+
+    // 解包
     Packet* p_data = (Packet*)buf;
 
 //    qDebug() << "p_data->pos =" << p_data->pos;
@@ -128,6 +131,8 @@ bool WebCamera::grabSocket()
 //    qDebug() << "p_data->length =" << p_data->length;
 
     memcpy(img.data + p_data->pos, p_data->data, p_data->length);
+
+    //
     if(int(p_data->pos + p_data->length) >= (hei * wid * channels - 1))
     {
         QMutexLocker locker(&m_image);

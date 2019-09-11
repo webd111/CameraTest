@@ -175,9 +175,19 @@ void ImgAcqThread::run()
                 timer.start();
 
                 QMutexLocker locker(m);
-                *himage = IplImageToHImage(img);
+
+                // 以下代码根据实际需求注释
+                // 如果为灰度或者彩色的单视图图像，19-09-11
+                *himage = IplImageRGBToHImage(img);         // 输入图像保持RGB结构，cvMat转HImage中进行了修改，可以直接将RGB转为HImage
+                // 如果为彩色+左右双视图图像，19-09-11，在使用时将图像高度*2，表示双视图大小
+//                hImage_ptr[0]->Clear();
+//                hImage_ptr[1]->Clear();
+//                IplImageRGBSplitToHImage(img,*hImage_ptr[0],*hImage_ptr[1]);
+
 #ifdef WIN32
-                DispImage(*himage, *hwindowhandle);
+//                DispImage(*himage, *hwindowhandle);
+                DispImage(*hImage_ptr[0], *hv_WindowHandle_ptr[0]);
+                DispImage(*hImage_ptr[1], *hv_WindowHandle_ptr[1]);
 #elif __linux__
                 emit ImgCaptured(cameraIndex);
 #endif

@@ -33,7 +33,7 @@ typedef struct Packet
 {
     uint pos;
     ushort num;
-    ushort length;
+    ushort length;          // 图像数据长度
     uchar data[bufsize-8];
 }Packet;
 

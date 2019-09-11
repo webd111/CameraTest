@@ -274,6 +274,11 @@
             <property name="mouseTracking">
              <bool>false</bool>
             </property>
+            <item>
+             <property name="text">
+              <string>5001</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="2" column="2">
@@ -353,6 +358,11 @@
             <property name="mouseTracking">
              <bool>false</bool>
             </property>
+            <item>
+             <property name="text">
+              <string>192.168.1.10</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="3" column="2">
@@ -395,7 +405,7 @@
             </property>
             <item>
              <property name="text">
-              <string>8184</string>
+              <string>256</string>
              </property>
             </item>
            </widget>
@@ -435,6 +445,11 @@
             <property name="editable">
              <bool>true</bool>
             </property>
+            <item>
+             <property name="text">
+              <string>5001</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="4" column="2">
@@ -2172,7 +2187,7 @@
      <x>0</x>
      <y>0</y>
      <width>1104</width>
-     <height>23</height>
+     <height>29</height>
     </rect>
    </property>
    <property name="font">
