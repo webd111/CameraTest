@@ -3,7 +3,7 @@
 StereoCamera::StereoCamera()
 {
     resetCameraParams();
-    rectify(cv::Size(1920, 1080));      // size of test images
+    rectify(cv::Size(640, 480));      // size of test images
 }
 
 void StereoCamera::resetCameraParams()
@@ -80,8 +80,8 @@ void StereoCamera::computeSGBM(const cv::Mat& imgL, const cv::Mat& imgR, int out
     sgbm->setBlockSize(sgbmWinSize);
     int cn = imgL.channels();
 
-    sgbm->setP1(8 * cn*sgbmWinSize*sgbmWinSize);
-    sgbm->setP2(32 * cn*sgbmWinSize*sgbmWinSize);
+    sgbm->setP1(8 * cn * sgbmWinSize*sgbmWinSize);
+    sgbm->setP2(32 * cn * sgbmWinSize*sgbmWinSize);
     sgbm->setMinDisparity(0);
     sgbm->setNumDisparities(numberOfDisparities);
     sgbm->setUniquenessRatio(10);
@@ -110,7 +110,11 @@ void StereoCamera::computeSGBM(const cv::Mat& imgL, const cv::Mat& imgR, int out
         disp = cv::Mat(disp.rows, disp.cols, CV_8UC1);
         normalize(dispReal, disp, 0, 255, cv::NORM_MINMAX, CV_8UC1);
     }
-    else{disp = cv::Mat();dispReal = cv::Mat();}
+    else
+    {
+        disp = cv::Mat();
+        dispReal = cv::Mat();
+    }
 }
 
 void StereoCamera::saveXYZ(const char* filename, const cv::Mat& mat)

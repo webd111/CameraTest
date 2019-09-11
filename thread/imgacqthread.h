@@ -28,6 +28,8 @@ class ImgAcqThread : public QThread
 
     int cameraIndex = 0;
     QString cameraInterface = "";
+    int mode = 2;       // Indicate image spliting mode,
+                        // 1 for single view, 2 for double view, 3 for double view + disparity map
 
     // These pointers should not be deallocated for they point at global variable
     HImage* himage = nullptr;
@@ -45,8 +47,8 @@ class ImgAcqThread : public QThread
     ~ImgAcqThread();
 
 public:
-    ImgAcqThread(HCameraParams _params);
-    ImgAcqThread(WCameraParams _params);
+    ImgAcqThread(HCameraParams _params, int mode = 2);
+    ImgAcqThread(WCameraParams _params, int mode = 2);
 
     QString getInterface();
 

@@ -45,7 +45,9 @@ SOURCES += \
     thread/imgacqthread.cpp \
     highaccuracytimer.cpp \
     capture/HalconCamera.cpp \
-    capture/WebCamera.cpp
+    capture/WebCamera.cpp \
+    thread/depthmappingthread.cpp \
+    opencv/stereocamera.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -55,7 +57,9 @@ HEADERS += \
     thread/imgacqthread.h \
     highaccuracytimer.h \
     capture/HalconCamera.h \
-    capture/WebCamera.h
+    capture/WebCamera.h \
+    thread/depthmappingthread.h \
+    opencv/stereocamera.h
 
 FORMS += \
     mainwindow.ui

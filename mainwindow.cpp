@@ -64,8 +64,8 @@ void MainWindow::resizeEvent(QResizeEvent *)
         SetWindowExtents(hv_WindowHandleSrc2, ui->centralWidget->y() + ui->groupBoxOriginalImage->y() + ui->labelOriginalImage2->y(),
                          ui->centralWidget->x() + ui->groupBoxOriginalImage->x() + ui->labelOriginalImage2->x(),
                          ui->labelOriginalImage2->width(), ui->labelOriginalImage2->height());
-        SetWindowExtents(hv_WindowHandleSrc3, ui->centralWidget->y() + ui->groupBoxOriginalImage->y() + ui->labelOriginalImage3->y(),
-                         ui->centralWidget->x() + ui->groupBoxOriginalImage->x() + ui->labelOriginalImage3->x(),
+        SetWindowExtents(hv_WindowHandleSrc3, ui->centralWidget->y() + ui->groupBoxDeepImage->y() + ui->labelOriginalImage3->y(),
+                         ui->centralWidget->x() + ui->groupBoxDeepImage->x() + ui->labelOriginalImage3->x(),
                          ui->labelOriginalImage3->width(), ui->labelOriginalImage3->height());
 
         DispImage(hImageSrc1, hv_WindowHandleSrc1);
@@ -100,9 +100,9 @@ void MainWindow::HalconInit()
                    Hlong(this->winId()), "", "", &hv_WindowHandleSrc2);
         HDevWindowStack::Push(hv_WindowHandleSrc2);
         SetWindowAttr("background_color", "gray");
-        OpenWindow(ui->centralWidget->y() + ui->groupBoxOriginalImage->y() + ui->labelOriginalImage3->y(),
-                   ui->centralWidget->x() + ui->groupBoxOriginalImage->x() + ui->labelOriginalImage3->x(),
-                   ui->labelOriginalImage2->width(), ui->labelOriginalImage2->height(),
+        OpenWindow(ui->centralWidget->y() + ui->groupBoxDeepImage->y() + ui->labelOriginalImage3->y(),
+                   ui->centralWidget->x() + ui->groupBoxDeepImage->x() + ui->labelOriginalImage3->x(),
+                   ui->labelOriginalImage3->width(), ui->labelOriginalImage3->height(),
                    Hlong(this->winId()), "", "", &hv_WindowHandleSrc3);
         HDevWindowStack::Push(hv_WindowHandleSrc3);
     } catch (HException &exception)
@@ -171,6 +171,13 @@ void MainWindow::on_actionCamera1Read_triggered()
     {
         if(imgAcqThread1.isNull())    //对象未创建
         {
+            int mode = 0;
+            if (ui->radioButtonSingleView->isChecked())
+                mode = 1;
+            else if (ui->radioButtonDoubleView->isChecked())
+                mode = 2;
+            else if (ui->radioButtonFullView->isChecked())
+                mode = 3;
             if(ui->comboBoxCameraInterface1->currentText() == USBCameraInterface ||
                     ui->comboBoxCameraInterface1->currentText() == "GigEVision2")
             {
@@ -181,7 +188,7 @@ void MainWindow::on_actionCamera1Read_triggered()
 				hparams.port = ui->comboBoxCameraPort1->currentText().toInt();
 				hparams.cameraType = ui->comboBoxCameraType1->currentText();
                 hparams.isConnected = false;
-                imgAcqThread1 = new ImgAcqThread(hparams);
+                imgAcqThread1 = new ImgAcqThread(hparams, mode);
             }
             else if(ui->comboBoxCameraInterface1->currentText() == "UserDefined")
             {
@@ -196,7 +203,7 @@ void MainWindow::on_actionCamera1Read_triggered()
                 wparams.height = ui->comboBoxImageHeight1->currentText().toInt();
                 wparams.channels = ui->comboBoxImageChannel1->currentText().toInt();
                 wparams.data_length = ui->comboBoxDataLength1->currentText().toInt();
-                imgAcqThread1 = new ImgAcqThread(wparams);
+                imgAcqThread1 = new ImgAcqThread(wparams, mode);
             }
             connect(imgAcqThread1, &ImgAcqThread::finished, imgAcqThread1, &QObject::deleteLater);
             connect(imgAcqThread1, &QObject::destroyed, this, &MainWindow::imgAcqThread1Destoryed);

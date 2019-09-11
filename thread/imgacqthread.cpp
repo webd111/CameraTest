@@ -1,9 +1,10 @@
 #include "imgacqthread.h"
 
-ImgAcqThread::ImgAcqThread(HCameraParams _params)
+ImgAcqThread::ImgAcqThread(HCameraParams _params, int _mode)
 {
     cameraInterface = _params.cameraInterface;
     cameraIndex = _params.cameraIndex;
+    mode = _mode;
 
     halconCamera = new HalconCamera(_params);
 
@@ -14,15 +15,17 @@ ImgAcqThread::ImgAcqThread(HCameraParams _params)
 //    qDebug() << QString("New ImgAcqThread is constructed with cameraIndex = %1, cameraInterface = %2, device = %3, port = %4, cameraType = %5").arg(cameraIndex).arg(cameraInterface).arg(device).arg(port).arg(cameraType);
 }
 
-ImgAcqThread::ImgAcqThread(WCameraParams _params)
+ImgAcqThread::ImgAcqThread(WCameraParams _params, int _mode)
 {
     cameraInterface = _params.cameraInterface;
     cameraIndex = _params.cameraIndex;
+    mode = _mode;
 
     webCamera = new WebCamera(_params);
 
     himage = hImage_ptr[cameraIndex-1];
     hwindowhandle = hv_WindowHandle_ptr[cameraIndex-1];
+    qDebug() << "mode: " << mode;
 }
 
 ImgAcqThread::~ImgAcqThread()
@@ -162,10 +165,10 @@ void ImgAcqThread::run()
 
             // Using socket
             Mat img;
-            webCamera->sendCommand(0x01);           // cmd: send. The send procedure seems to be necessary before it can start to receive.
+//            webCamera->sendCommand(0x01);           // cmd: send. The send procedure seems to be necessary before it can start to receive.
             while( !isInterruptionRequested() )
             {
-//                webCamera->sendCommand(0x01);           // cmd: send
+                webCamera->sendCommand(0x01);           // cmd: send
                 while(!webCamera->grabSocket() && !isInterruptionRequested());
 //                webCamera->sendCommand(0x02);           // cmd: received
                 if (!webCamera->getImage(img))
@@ -178,16 +181,27 @@ void ImgAcqThread::run()
 
                 // 以下代码根据实际需求注释
                 // 如果为灰度或者彩色的单视图图像，19-09-11
-                *himage = IplImageRGBToHImage(img);         // 输入图像保持RGB结构，cvMat转HImage中进行了修改，可以直接将RGB转为HImage
-                // 如果为彩色+左右双视图图像，19-09-11，在使用时将图像高度*2，表示双视图大小
-//                hImage_ptr[0]->Clear();
-//                hImage_ptr[1]->Clear();
-//                IplImageRGBSplitToHImage(img,*hImage_ptr[0],*hImage_ptr[1]);
-
+                if (mode == 1)
+                {
+                    *himage = IplImageRGBToHImage(img);         // 输入图像保持RGB结构，cvMat转HImage中进行了修改，可以直接将RGB转为HImage
+                }
+                else if (mode == 2)
+                {
+                    // 如果为彩色+左右双视图图像，在使用时将图像高度*2，表示双视图大小，19-09-11
+                    hImage_ptr[0]->Clear();
+                    hImage_ptr[1]->Clear();
+                    IplImageRGBSplitToHImage(img,*hImage_ptr[0],*hImage_ptr[1]);
+                }
+                else if (mode == 3)
+                {
+                    // Waiting for implementation
+                }
 #ifdef WIN32
 //                DispImage(*himage, *hwindowhandle);
-                DispImage(*hImage_ptr[0], *hv_WindowHandle_ptr[0]);
-                DispImage(*hImage_ptr[1], *hv_WindowHandle_ptr[1]);
+                for(int i = 0; i < mode; ++i)
+                {
+                    DispImage(*hImage_ptr[i], *hv_WindowHandle_ptr[i]);
+                }
 #elif __linux__
                 emit ImgCaptured(cameraIndex);
 #endif
