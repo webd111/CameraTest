@@ -488,16 +488,26 @@ void MainWindow::updateInformation(int cameraIndex, QString* cameraInfo)
 
 void MainWindow::on_actionSave_triggered()
 {
-    HImage img;
-    QMutexLocker locker(m_ptr[1]);
+    HImage img,img2;
+    QMutexLocker locker1(m_ptr[0]);
     if(hImageSrc1.IsInitialized())
         img = hImageSrc1;
     else
         return;
-    locker.unlock();
-    char* path = QString(QString("C:/Users/12257/Desktop/img") + QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
-    qDebug() << "path:" << path;
-    img.WriteImage("png", 0, path);
+    locker1.unlock();
+    QMutexLocker locker2(m_ptr[1]);
+    if(hImageSrc2.IsInitialized())
+        img2 = hImageSrc2;
+    else
+        return;
+    locker2.unlock();
+    char* pathA = QString(QString("C:/Users/12257/Desktop/calibration/imgA") + QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
+    qDebug() << "pathA:" << pathA;
+    img.WriteImage("png", 0, pathA);
+    char* pathB = QString(QString("C:/Users/12257/Desktop/calibration/imgB") + QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
+    qDebug() << "pathB:" << pathB;
+    img2.WriteImage("png", 0, pathB);
+
 }
 
 void MainWindow::on_actionRefresh_triggered()

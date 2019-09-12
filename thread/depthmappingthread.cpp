@@ -1,6 +1,12 @@
-#include "depthmappingthread.h"
+//#include "depthmappingthread.h"
 
-DepthMappingThread::DepthMappingThread(QObject *parent) : QObject(parent)
-{
+//DepthMappingThread::DepthMappingThread()
+//{
 
-}
+//}
+
+
+//void DepthMappingThread::run()
+//{
+
+//}

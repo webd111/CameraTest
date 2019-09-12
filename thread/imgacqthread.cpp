@@ -165,10 +165,10 @@ void ImgAcqThread::run()
 
             // Using socket
             Mat img;
-//            webCamera->sendCommand(0x01);           // cmd: send. The send procedure seems to be necessary before it can start to receive.
+            webCamera->sendCommand(0x01);           // cmd: send. The send procedure seems to be necessary before it can start to receive.
             while( !isInterruptionRequested() )
             {
-                webCamera->sendCommand(0x01);           // cmd: send
+//                webCamera->sendCommand(0x01);           // cmd: send
                 while(!webCamera->grabSocket() && !isInterruptionRequested());
 //                webCamera->sendCommand(0x02);           // cmd: received
                 if (!webCamera->getImage(img))

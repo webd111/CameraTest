@@ -1,24 +1,24 @@
-#ifndef DEPTHMAPPINGTHREAD_H
-#define DEPTHMAPPINGTHREAD_H
+//#ifndef DEPTHMAPPINGTHREAD_H
+//#define DEPTHMAPPINGTHREAD_H
 
-#include <QObject>
-#include <QThread>
-#include <highaccuracytimer.h>
+//#include <QObject>
+//#include <QThread>
+//#include <highaccuracytimer.h>
 
-class DepthMappingThread : public QThread
-{
-    Q_OBJECT
-    ~DepthMappingThread();
-    HighAccuracyTimer timer;
-public:
-    explicit DepthMappingThread();
+//class DepthMappingThread : public QThread
+//{
+//    Q_OBJECT
+//    ~DepthMappingThread();
+//    HighAccuracyTimer timer;
+//public:
+//    explicit DepthMappingThread();
 
-signals:
+//signals:
 
-public slots:
+//public slots:
 
-protected:
-    void run();
-};
+//protected:
+//    void run();
+//};
 
-#endif // DEPTHMAPPINGTHREAD_H
+//#endif // DEPTHMAPPINGTHREAD_H

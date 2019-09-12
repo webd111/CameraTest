@@ -6,7 +6,7 @@ WebCamera::WebCamera(WCameraParams _params, QWidget*)
     cameraIndex = _params.cameraIndex;
     cameraInterface = _params.cameraInterface;
 
-    hei = _params.height;
+    hei = _params.height*2;
     wid = _params.width;
     data_length = _params.data_length;
     channels = _params.channels;
@@ -129,14 +129,16 @@ bool WebCamera::grabSocket()
 //    qDebug() << "p_data->pos =" << p_data->pos;
 //    qDebug() << "p_data->packet_num =" << p_data->num;
 //    qDebug() << "p_data->length =" << p_data->length;
-
+//    qDebug()<<hei<<","<<wid<<","<<channels<<endl;
     memcpy(img.data + p_data->pos, p_data->data, p_data->length);
 
     //
     if(int(p_data->pos + p_data->length) >= (hei * wid * channels - 1))
     {
+//            qDebug()<<"here"<<endl;
         QMutexLocker locker(&m_image);
         img.copyTo(image);
+//        qDebug()<<hei<<","<<wid<<","<<channels<<endl;
 //        qDebug() << "img.rows = " << img.rows << "img.cols = " << img.cols;
         isGrabbed = true;
         locker.unlock();
