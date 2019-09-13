@@ -164,14 +164,14 @@ void ImgAcqThread::run()
             qDebug() << "ImgAcqThread::run() parameters are valid.";
 
             // Using socket
-            Mat img;
+            Mat img, depth_img;
             webCamera->sendCommand(0x01);           // cmd: send. The send procedure seems to be necessary before it can start to receive.
             while( !isInterruptionRequested() )
             {
 //                webCamera->sendCommand(0x01);           // cmd: send
                 while(!webCamera->grabSocket() && !isInterruptionRequested());
 //                webCamera->sendCommand(0x02);           // cmd: received
-                if (!webCamera->getImage(img))
+                if (!webCamera->getImage(img,depth_img))
                     continue;
 
                 time = timer.elapsed();
@@ -195,6 +195,11 @@ void ImgAcqThread::run()
                 else if (mode == 3)
                 {
                     // Waiting for implementation
+                    hImage_ptr[0]->Clear();
+                    hImage_ptr[1]->Clear();
+                    hImage_ptr[2]->Clear();
+                    IplImageRGBSplitToHImage(img,*hImage_ptr[0],*hImage_ptr[1]);
+                    *hImage_ptr[2] = IplImageRGBToHImage(depth_img);
                 }
 #ifdef WIN32
 //                DispImage(*himage, *hwindowhandle);

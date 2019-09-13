@@ -51,6 +51,7 @@ typedef struct WCameraParams
     int data_length = 0;
     int channels = 1;
 
+
     // Not using "delete" in destructor
     WCameraParams(){}
     ~WCameraParams(){}
@@ -66,6 +67,11 @@ class WebCamera : public QWidget
 
     Mat image;
     Mat image_std;
+
+    // Feiyue add on 20190912
+    Mat depth_image;
+    int depth_start_pos;
+    // Feiyue add on 20190912
 
     // Camera parameters
     int cameraIndex;
@@ -91,13 +97,16 @@ class WebCamera : public QWidget
     int wid = 1920;
     int channels = 1;
     Mat img;
+    // Feiyue add
+    Mat depth_img;
+    // Feiyue add
 
 public:
     WebCamera(WCameraParams _params, QWidget* parent = nullptr);
     ~WebCamera();
 
     WCameraParams getWParams();
-    bool getImage(Mat& img);             // 获取cv::Mat格式的图像
+    bool getImage(Mat& img, Mat& depth_img);             // 获取cv::Mat格式的图像
 //    bool openSocketAdapter();
 //    bool initSocket();
     bool sendCommand(char cmd);

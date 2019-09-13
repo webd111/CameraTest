@@ -67,10 +67,14 @@ void MainWindow::resizeEvent(QResizeEvent *)
         SetWindowExtents(hv_WindowHandleSrc3, ui->centralWidget->y() + ui->groupBoxDeepImage->y() + ui->labelOriginalImage3->y(),
                          ui->centralWidget->x() + ui->groupBoxDeepImage->x() + ui->labelOriginalImage3->x(),
                          ui->labelOriginalImage3->width(), ui->labelOriginalImage3->height());
+        SetWindowExtents(hv_WindowHandleSrc4, ui->centralWidget->y() + ui->groupBoxDeepImage->y() + ui->labelOriginalImage4->y(),
+                         ui->centralWidget->x() + ui->groupBoxDeepImage->x() + ui->labelOriginalImage4->x(),
+                         ui->labelOriginalImage4->width(), ui->labelOriginalImage4->height());
 
         DispImage(hImageSrc1, hv_WindowHandleSrc1);
         DispImage(hImageSrc2, hv_WindowHandleSrc2);
         DispImage(hImageSrc3, hv_WindowHandleSrc3);
+        DispImage(hImageSrc4, hv_WindowHandleSrc4);
     }
     catch (HException &){}
 #endif
@@ -105,6 +109,12 @@ void MainWindow::HalconInit()
                    ui->labelOriginalImage3->width(), ui->labelOriginalImage3->height(),
                    Hlong(this->winId()), "", "", &hv_WindowHandleSrc3);
         HDevWindowStack::Push(hv_WindowHandleSrc3);
+        SetWindowAttr("background_color", "gray");
+        OpenWindow(ui->centralWidget->y() + ui->groupBoxDeepImage->y() + ui->labelOriginalImage4->y(),
+                   ui->centralWidget->x() + ui->groupBoxDeepImage->x() + ui->labelOriginalImage4->x(),
+                   ui->labelOriginalImage4->width(), ui->labelOriginalImage4->height(),
+                   Hlong(this->winId()), "", "", &hv_WindowHandleSrc4);
+        HDevWindowStack::Push(hv_WindowHandleSrc4);
     } catch (HException &exception)
     {
         fprintf(stderr, "  Error #%u in %s: %s\n", exception.ErrorCode(),
@@ -507,7 +517,6 @@ void MainWindow::on_actionSave_triggered()
     char* pathB = QString(QString("C:/Users/12257/Desktop/calibration/imgB") + QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
     qDebug() << "pathB:" << pathB;
     img2.WriteImage("png", 0, pathB);
-
 }
 
 void MainWindow::on_actionRefresh_triggered()
