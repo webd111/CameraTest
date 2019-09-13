@@ -32,6 +32,10 @@ int main(int argc, char *argv[])
     w.updateParamsWidget();       // 初始化参数控件中的参数
     splash.finish(&w);
 
-    return a.exec();;
+    // Test code
+    hImageSrc1.ReadImage("C:/Users/12257/Desktop/calibration/left/imgA181719.png");
+    hImageSrc2.ReadImage("C:/Users/12257/Desktop/calibration/right/imgB181719.png");
+
+    return a.exec();
 }
 

@@ -20,9 +20,11 @@
 #include "myvariable.h"
 #include "halcon/myhalcon.h"
 #include "opencv/myopencv.h"
+#include "opencv/stereocamera.h"
 #include "capture/HalconCamera.h"
 #include "capture/WebCamera.h"
 #include "thread/imgacqthread.h"
+#include "thread/depthmappingthread.h"
 
 namespace Ui {
 class MainWindow;
@@ -47,8 +49,11 @@ public:
     QPointer<ImgAcqThread> imgAcqThread1;
     QPointer<ImgAcqThread> imgAcqThread2;
     QPointer<ImgAcqThread> imgAcqThread3;
+    QPointer<DepthMappingThread> depthMappingThread;
 
     QStandardItemModel *model = new QStandardItemModel();
+
+    StereoCamera* stereoCamera = new StereoCamera;
 
     QVector<QLabel*> qlabel_ptr;
 
@@ -79,6 +84,7 @@ private slots:
     void imgAcqThread1Destoryed();
     void imgAcqThread2Destoryed();
     void imgAcqThread3Destoryed();
+    void depthMappingThreadDestoryed();
 
     void on_actionSave_triggered();
     void on_actionRefresh_triggered();

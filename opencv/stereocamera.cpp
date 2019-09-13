@@ -1,5 +1,7 @@
 #include "opencv/stereocamera.h"
 
+using namespace cv;
+
 StereoCamera::StereoCamera()
 {
     resetCameraParams();
@@ -8,22 +10,26 @@ StereoCamera::StereoCamera()
 
 void StereoCamera::resetCameraParams()
 {
-    cameraMatrix1 = (cv::Mat_<double>(3, 3) << 1.415123049671082e+03, 0, 0,
-                     0, 1.414954143927605e+03, 0,
-                     9.929454139215076e+02, 5.112310201960978e+02, 1);
-    cameraMatrix1 = cameraMatrix1.t();
-    distCoffs1 = (cv::Mat_<double>(1, 5) << -0.111056936133422, -0.217190554735444,
-                  6.094631721034751e-05, 1.796910452452146e-05, 0.339662604994211);
-    cameraMatrix2 = (cv::Mat_<double>(3, 3) << 1.421923511042942e+03, 0, 0,
-                     0, 1.420159536231503e+03, 0,
-                     9.583451553109910e+02, 4.762824159150644e+02, 1);
-    cameraMatrix2 = cameraMatrix2.t();
-    distCoffs2 = (cv::Mat_<double>(1, 5) << -0.133180789157152, -0.074379009557110,
-                  -6.732732709133293e-05, 0.001625212638169, 0.121632332140773);
-    R12 = (cv::Mat_<double>(3, 3) << 0.999801807816275, -1.100615251640996e-04, 0.019908113264906,
-           -2.387380575372597e-05, 0.999977371089032, 0.006727312978461,
-           -0.019908403184310, -0.006726454960040, 0.999779180762593);
-    T12 = (cv::Mat_<double>(3, 1) << -1.205769421790057e+02, 0.313982796965114, 0.338439688817049);
+    // fixed parameters
+    cameraMatrix1 = (cv::Mat_<double>(3, 3) << 5249.197861046954, 0, 0,
+        0, 5260.513204067449, 0,
+        386.0524069845246, 663.6175953244242, 1);
+    cameraMatrix1 = cameraMatrix1.t();      // Intrinsic matrix is the transposed matrix of what MATLAB gets.
+    distCoffs1 = (cv::Mat_<double>(1, 5) << -0.061085854940938, 7.837082691171115,
+        0.010600327209386, -0.002396321399522, -2.762785962386256e+02);
+
+    cameraMatrix2 = (cv::Mat_<double>(3, 3) << 5.232922781442366e+03, 0, 0,
+        0, 5.232433864816176e+03, 0,
+        4.032292888131523e+02, 6.618573046544811e+02, 1);
+    cameraMatrix2 = cameraMatrix2.t();      // Intrinsic matrix is the transposed matrix of what MATLAB gets.
+    distCoffs2 = (cv::Mat_<double>(1, 5) << 0.081118774330704, -24.875671418774470,
+        -0.006414370382937, -0.001203568479618, 8.290470595079345e+02);
+
+    R12 = (cv::Mat_<double>(3, 3) << 0.999991073366845, 0.002564167845687, 0.003358307592299,
+        -0.002528757170571, 0.999941609387234, -0.010506341096719,
+        -0.003385051520677, 0.010497754966061, 0.999939167433137);
+    R12 = R12.t();                  // Rotation matrix is the transposed matrix of what MATLAB gets.
+    T12 = (cv::Mat_<double>(3, 1) << -1.544198130667570e+02, -0.825013296929276, -4.804107937524194);
 }
 
 void StereoCamera::setCameraParams(cv::Mat _cameraMatrix1, cv::Mat _distCoffs1,
@@ -43,37 +49,44 @@ void StereoCamera::rectify(cv::Size size)
     stereoRectify(cameraMatrix1, distCoffs1, cameraMatrix2, distCoffs2, size, R12, T12, R1, R2, P1, P2, Q);
 }
 
+void StereoCamera::setSourceImage(cv::Mat& img1, cv::Mat& img2)
+{
+    src1 = img1;
+    src2 = img2;
+}
+
 void StereoCamera::undist(int interpMethod)
 {
-    cv::Mat map11, map12, map21, map22;
-    cv::initUndistortRectifyMap(cameraMatrix1, distCoffs1, R1, P1, cv::Size(std::size(src1).width, std::size(src1).height), CV_32FC1, map11, map12);
-    cv::initUndistortRectifyMap(cameraMatrix2, distCoffs2, R2, P2, cv::Size(std::size(src2).width, std::size(src2).height), CV_32FC1, map21, map22);
-    cv::remap(src1, dst1, map11, map12, interpMethod);
-    cv::remap(src2, dst2, map21, map22, interpMethod);
+    Mat map11, map12, map21, map22;
+    initUndistortRectifyMap(cameraMatrix1, distCoffs1, R1, P1, cv::Size(std::size(src1).width, std::size(src1).height), CV_32FC1, map11, map12);
+    initUndistortRectifyMap(cameraMatrix2, distCoffs2, R2, P2, cv::Size(std::size(src2).width, std::size(src2).height), CV_32FC1, map21, map22);
+    remap(src1, dst1, map11, map12, interpMethod);
+    remap(src2, dst2, map21, map22, interpMethod);
 
-//    cv::Mat canvas;
-//    int wid, hei;
-//    wid = cvRound(std::size(src1).width);
-//    hei = cvRound(std::size(src1).height);
-//    canvas.create(hei, wid*2, CV_8UC3);
-//    for (int k = 0; k < 2; k++)
-//    {
-//        cv::Mat canvasPart = canvas(cv::Rect(wid*k, 0, wid, hei));
-//        cv::Mat src = k == 0 ? dst1: dst2;
-//        cv::resize(src, canvasPart, canvasPart.size(), 0, 0, cv::INTER_AREA);
-//    }
-//    for (int j = 0; j < canvas.rows; j += 60)
-//        line(canvas, cv::Point(0, j), cv::Point(canvas.cols, j), cv::Scalar(0, 255, 0), 3, 8);
-//    namedWindow("RectifiedStereoCamera", WINDOW_NORMAL);
-//    imshow("RectifiedStereoCamera", canvas);
+    cv::Mat canvas;
+    int wid, hei;
+    wid = cvRound(std::size(src1).width);
+    hei = cvRound(std::size(src1).height);
+    canvas.create(hei, wid*2, CV_8UC3);
+    for (int k = 0; k < 2; k++)
+    {
+        cv::Mat canvasPart = canvas(cv::Rect(wid*k, 0, wid, hei));
+        cv::Mat src = k == 0 ? dst1: dst2;
+        cv::resize(src, canvasPart, canvasPart.size(), 0, 0, cv::INTER_AREA);
+    }
+    for (int j = 0; j < canvas.rows; j += 60)
+        line(canvas, cv::Point(0, j), cv::Point(canvas.cols, j), cv::Scalar(0, 255, 0), 1, 8);
+//    namedWindow("RectifiedStereoCamera", WINDOW_AUTOSIZE);
+    namedWindow("RectifiedStereoCamera", WINDOW_NORMAL);
+    imshow("RectifiedStereoCamera", canvas);
+    waitKey(1);
 }
 
 void StereoCamera::computeSGBM(const cv::Mat& imgL, const cv::Mat& imgR, int outputImg)
 {
-    int numberOfDisparities = ((imgL.size().width / 8) + 15)&-16;
-//    qDebug() << "numberOfDisparities" << numberOfDisparities;
+    int numberOfDisparities = 64;
     cv::Ptr<cv::StereoSGBM> sgbm = cv::StereoSGBM::create(0, 16, 3);
-    sgbm->setPreFilterCap(32);
+    sgbm->setPreFilterCap(31);
 
     int SADWindowSize = 5;
     int sgbmWinSize = SADWindowSize > 0 ? SADWindowSize : 3;
@@ -84,10 +97,11 @@ void StereoCamera::computeSGBM(const cv::Mat& imgL, const cv::Mat& imgR, int out
     sgbm->setP2(32 * cn * sgbmWinSize*sgbmWinSize);
     sgbm->setMinDisparity(0);
     sgbm->setNumDisparities(numberOfDisparities);
-    sgbm->setUniquenessRatio(10);
+    sgbm->setUniquenessRatio(5);
     sgbm->setSpeckleWindowSize(100);
-    sgbm->setSpeckleRange(32);
+    sgbm->setSpeckleRange(1);
     sgbm->setDisp12MaxDiff(1);
+    sgbm->setMode(StereoSGBM::MODE_HH4);
 
     cv::Mat left_gray, right_gray;
     cvtColor(imgL, left_gray, cv::COLOR_BGR2GRAY);

@@ -174,6 +174,11 @@ void MainWindow::imgAcqThread3Destoryed()
     ui->actionCamera3Read->setChecked(false);
 }
 
+void MainWindow::depthMappingThreadDestoryed()
+{
+    ui->actionDepthMapping->setChecked(false);
+}
+
 void MainWindow::on_actionCamera1Read_triggered()
 {
     ui->tabWidgetParameter->setCurrentIndex(0);         //将参数tab设置为当前对应tab
@@ -317,6 +322,36 @@ void MainWindow::on_actionCamera3Read_triggered()
 
 void MainWindow::on_actionDepthMapping_triggered()
 {
+    if(ui->actionDepthMapping->isChecked())
+    {
+        if(depthMappingThread.isNull())    //对象未创建
+        {
+            depthMappingThread = new DepthMappingThread(stereoCamera);
+
+            connect(depthMappingThread, &DepthMappingThread::finished, depthMappingThread, &QObject::deleteLater);
+            connect(depthMappingThread, &QObject::destroyed, this, &MainWindow::depthMappingThreadDestoryed);
+//            connect(depthMappingThread, SIGNAL(ImgCaptured(int)), this, SLOT(updateImage(int)));
+//            connect(depthMappingThread, SIGNAL(ImgAcqTime(int, double)), this, SLOT(updateStatistic(int, double)), Qt::BlockingQueuedConnection);
+//            connect(depthMappingThread, SIGNAL(ImgAcqException(int, QString, HException)), this, SLOT(updateException(int, QString, HException)), Qt::BlockingQueuedConnection);
+//            connect(depthMappingThread, SIGNAL(ImgAcqInfo(int, QString*)), this, SLOT(updateInformation(int, QString*)), Qt::BlockingQueuedConnection);
+        }
+        if(!depthMappingThread->isRunning())
+            depthMappingThread->start();
+    }
+    else
+    {
+        if(!depthMappingThread.isNull())
+        {
+            if(depthMappingThread->isRunning())
+            {
+//                // All signals to and from the object are automatically disconnected. So there's no need to disconnect manually.
+//                disconnect(depthMappingThread, SIGNAL(ImgAcqTime(int, double)), this, SLOT(updateStatistic(int, double)));
+//                disconnect(depthMappingThread, SIGNAL(ImgAcqException(int, QString, HException)), this, SLOT(updateException(int, QString, HException)));
+//                disconnect(depthMappingThread, SIGNAL(ImgAcqInfo(int, QString*)), this, SLOT(updateInformation(int, QString*)));
+                depthMappingThread->end();       // This thread will quit gracefully
+            }
+        }
+    }
 }
 
 void MainWindow::on_actionMatching_triggered()
@@ -419,12 +454,12 @@ void MainWindow::updateException(int cameraIndex, QString time, HException e)
     model->setItem(rows, 1, itemTime);
     model->setItem(rows, 2, itemException);
 
+//    delete itemException;
     ui->tableViewException->setModel(model);
 
 //    // They should not be deleted
 //    delete itemIndex;
 //    delete itemTime;
-//    delete itemException;
 }
 
 void MainWindow::updateException(QString time, QString e1, HException e2)

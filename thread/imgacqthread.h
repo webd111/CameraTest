@@ -34,7 +34,7 @@ class ImgAcqThread : public QThread
     // These pointers should not be deallocated for they point at global variable
     HImage* himage = nullptr;
     HTuple* hwindowhandle = nullptr;
-    QMutex* m = nullptr;
+    QMutex* m[3] = {nullptr, nullptr, nullptr};
 
     // Halcon Camera
     HalconCamera* halconCamera = nullptr;

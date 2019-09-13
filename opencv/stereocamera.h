@@ -21,7 +21,8 @@ public:
     cv::Mat R1, R2, P1, P2, Q;
 
     StereoCamera();
-
+    void setSourceImage(cv::Mat& img1, cv::Mat& img2);
+//    void getDestImage();
     void undist(int interp = cv::INTER_LINEAR);
     void resetCameraParams();
     void setCameraParams(cv::Mat, cv::Mat, cv::Mat, cv::Mat, cv::Mat, cv::Mat);

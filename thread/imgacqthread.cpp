@@ -10,7 +10,7 @@ ImgAcqThread::ImgAcqThread(HCameraParams _params, int _mode)
 
     himage = hImage_ptr[cameraIndex-1];
     hwindowhandle = hv_WindowHandle_ptr[cameraIndex-1];
-    m = m_ptr[cameraIndex-1];
+    m[cameraIndex-1] = m_ptr[cameraIndex-1];
 
 //    qDebug() << QString("New ImgAcqThread is constructed with cameraIndex = %1, cameraInterface = %2, device = %3, port = %4, cameraType = %5").arg(cameraIndex).arg(cameraInterface).arg(device).arg(port).arg(cameraType);
 }
@@ -102,7 +102,7 @@ void ImgAcqThread::run()
                         // Preprocessing
 
                         // Copy to Global variant /*and normalize*/
-                        QMutexLocker locker(m);
+                        QMutexLocker locker(m[cameraIndex-1]);
 //                      *himage = hi_Image.ScaleImageMax();
                         *himage = hi_Image;
 #ifdef WIN32
@@ -177,24 +177,28 @@ void ImgAcqThread::run()
                 time = timer.elapsed();
                 timer.start();
 
-                QMutexLocker locker(m);
+                QVector<QMutexLocker*> locker;
+                for(int i = 0; i < mode; ++i)
+                {
+                    locker.push_back(new QMutexLocker(m_ptr[i]));
+                }
 
                 // 以下代码根据实际需求注释
-                // 如果为灰度或者彩色的单视图图像，19-09-11
+                // 如果为单视图图像，19-09-11
                 if (mode == 1)
                 {
                     *himage = IplImageRGBToHImage(img);         // 输入图像保持RGB结构，cvMat转HImage中进行了修改，可以直接将RGB转为HImage
                 }
                 else if (mode == 2)
                 {
-                    // 如果为彩色+左右双视图图像，在使用时将图像高度*2，表示双视图大小，19-09-11
+                    // 如果为左右双视图图像，19-09-11
                     hImage_ptr[0]->Clear();
                     hImage_ptr[1]->Clear();
                     IplImageRGBSplitToHImage(img,*hImage_ptr[0],*hImage_ptr[1]);
                 }
                 else if (mode == 3)
                 {
-                    // Waiting for implementation
+                    // 如果为左右双视图+深度图图像，19-09-11
                     hImage_ptr[0]->Clear();
                     hImage_ptr[1]->Clear();
                     hImage_ptr[2]->Clear();
@@ -210,7 +214,11 @@ void ImgAcqThread::run()
 #elif __linux__
                 emit ImgCaptured(cameraIndex);
 #endif
-                locker.unlock();
+                for(int i = 0; i < mode; ++i)
+                {
+                    locker[i]->unlock();
+                    delete locker[i];
+                }
 
 //                Sleep(100);
 

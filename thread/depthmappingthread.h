@@ -1,24 +1,32 @@
-//#ifndef DEPTHMAPPINGTHREAD_H
-//#define DEPTHMAPPINGTHREAD_H
+#ifndef DEPTHMAPPINGTHREAD_H
+#define DEPTHMAPPINGTHREAD_H
 
-//#include <QObject>
-//#include <QThread>
-//#include <highaccuracytimer.h>
+#include <QObject>
+#include <QThread>
+#include <QMutex>
+#include <QMutexLocker>
 
-//class DepthMappingThread : public QThread
-//{
-//    Q_OBJECT
-//    ~DepthMappingThread();
-//    HighAccuracyTimer timer;
-//public:
-//    explicit DepthMappingThread();
+#include <highaccuracytimer.h>
+#include <opencv/stereocamera.h>
 
-//signals:
 
-//public slots:
+class DepthMappingThread : public QThread
+{
+    Q_OBJECT
+    ~DepthMappingThread();
+    HighAccuracyTimer timer;
 
-//protected:
-//    void run();
-//};
+    StereoCamera* stereoCamera;
+public:
+    explicit DepthMappingThread(StereoCamera* stereoCamera);
 
-//#endif // DEPTHMAPPINGTHREAD_H
+    void end();
+signals:
+
+public slots:
+
+protected:
+    void run();
+};
+
+#endif // DEPTHMAPPINGTHREAD_H
