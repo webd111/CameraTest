@@ -6,18 +6,19 @@ WebCamera::WebCamera(WCameraParams _params, QWidget*)
     cameraIndex = _params.cameraIndex;
     cameraInterface = _params.cameraInterface;
 
-    hei = _params.height*2;
+    hei = _params.height;
     wid = _params.width;
     data_length = _params.data_length;
     channels = _params.channels;
     if(channels == 1)
-        img = Mat::zeros(hei, wid, CV_8UC1);
+        img = Mat::zeros(hei*2, wid, CV_8UC1);
     else if (channels == 3)
-        img = Mat::zeros(hei, wid, CV_8UC3);
+        img = Mat::zeros(hei*2, wid, CV_8UC3);
     // Feiyue add on 20190912
     depth_img = Mat::zeros(hei, wid, CV_8UC1);
-    depth_start_pos = hei*wid*channels;
+    depth_start_pos = 2*hei*wid*channels;
     // Feiyue add on 20190912
+//    qDebug() << depth_img.rows << depth_img.cols << depth_start_pos;
 
 
 #ifdef WIN32
@@ -136,10 +137,19 @@ bool WebCamera::grabSocket()
 //    qDebug() << "p_data->packet_num =" << p_data->num;
 //    qDebug() << "p_data->length =" << p_data->length;
 //    qDebug()<<hei<<","<<wid<<","<<channels<<endl;
-    if(int(p_data->pos)<depth_start_pos)
-        memcpy(img.data + p_data->pos, p_data->data, p_data->length);
+//    qDebug() << p_data->pos;
+    if(int(p_data->pos) < depth_start_pos)
+    {
+        if(int(p_data->pos + p_data->length) <= depth_start_pos)         ///fasdfsadf
+            memcpy(img.data + p_data->pos, p_data->data, p_data->length);
+        else {
+            qDebug() << "change";
+        }
+    }
     else
-        memcpy(depth_image.data + (int(p_data->pos)-depth_start_pos), p_data->data, p_data->length);
+    {
+        memcpy(depth_img.data + int(p_data->pos) - depth_start_pos, p_data->data, p_data->length);
+    }
 
 //    //
 //    if(int(p_data->pos + p_data->length) >= (hei * wid * channels - 1))
@@ -152,7 +162,9 @@ bool WebCamera::grabSocket()
 //        isGrabbed = true;
 //        locker.unlock();
 //    }
-    if(int(p_data->pos + p_data->length) >= (hei * wid * (channels+1) - 1))
+//    qDebug() << "xxx" << p_data->pos + p_data->length;
+
+    if(int(p_data->pos + p_data->length) >= ( hei * wid * (2 * channels + 1) - 1))
     {
        QMutexLocker locker(&m_image);
        img.copyTo(image);

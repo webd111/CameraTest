@@ -47,7 +47,8 @@ SOURCES += \
     capture/HalconCamera.cpp \
     capture/WebCamera.cpp \
     thread/depthmappingthread.cpp \
-    opencv/stereocamera.cpp
+    opencv/stereocamera.cpp \
+    thread/dispthread.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -59,7 +60,8 @@ HEADERS += \
     capture/HalconCamera.h \
     capture/WebCamera.h \
     thread/depthmappingthread.h \
-    opencv/stereocamera.h
+    opencv/stereocamera.h \
+    thread/dispthread.h
 
 FORMS += \
     mainwindow.ui

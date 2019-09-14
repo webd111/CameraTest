@@ -154,7 +154,6 @@ void ImgAcqThread::run()
         {
             double time = 0;
 
-
             QString info[4] = {params.cameraInterface,
                                "",
                                QString::fromStdString(params.ip_client)+QString("::")+QString::number(params.port_client),
@@ -168,6 +167,7 @@ void ImgAcqThread::run()
             webCamera->sendCommand(0x01);           // cmd: send. The send procedure seems to be necessary before it can start to receive.
             while( !isInterruptionRequested() )
             {
+//                qDebug()<< "while start";
 //                webCamera->sendCommand(0x01);           // cmd: send
                 while(!webCamera->grabSocket() && !isInterruptionRequested());
 //                webCamera->sendCommand(0x02);           // cmd: received
@@ -177,11 +177,7 @@ void ImgAcqThread::run()
                 time = timer.elapsed();
                 timer.start();
 
-                QVector<QMutexLocker*> locker;
-                for(int i = 0; i < mode; ++i)
-                {
-                    locker.push_back(new QMutexLocker(m_ptr[i]));
-                }
+                QMutexLocker locker1(m_ptr[0]);
 
                 // 以下代码根据实际需求注释
                 // 如果为单视图图像，19-09-11
@@ -214,11 +210,7 @@ void ImgAcqThread::run()
 #elif __linux__
                 emit ImgCaptured(cameraIndex);
 #endif
-                for(int i = 0; i < mode; ++i)
-                {
-                    locker[i]->unlock();
-                    delete locker[i];
-                }
+                locker1.unlock();
 
 //                Sleep(100);
 
