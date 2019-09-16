@@ -80,7 +80,7 @@ WebCamera::WebCamera(WCameraParams _params, QWidget*)
     {
         // Exception
         perror("bind");
-    }    
+    }
 }
 
 WebCamera::~WebCamera()
@@ -98,6 +98,9 @@ bool WebCamera::isImageGrabbed()
     {
         isGrabbed = false;
 //        qDebug() << "WebCamera::isImageGrabbed() isGrabbed = true";
+        QMutexLocker locker(&m_image);
+        emit sendImage(image, depth_image);
+        locker.unlock();
         return true;
     }
     else
@@ -136,6 +139,7 @@ bool WebCamera::grabSocket()
     // 解包
     Packet* p_data = (Packet*)buf;
 
+//    qDebug() << p_data->pos;
     if(int(p_data->pos) < depth_start_pos)
     {
         if(int(p_data->pos + p_data->length) <= depth_start_pos)         ///fasdfsadf
@@ -148,17 +152,15 @@ bool WebCamera::grabSocket()
         memcpy(depth_img.data + int(p_data->pos) - depth_start_pos, p_data->data, p_data->length);
     }
 
-    qDebug() << "pos" << p_data->pos;
     if(int(p_data->pos + p_data->length) >= ( hei * wid * (2 * channels + 1) - 1))
     {
-
-        QMutexLocker locker(&m_image);
+       QMutexLocker locker(&m_image);
 //       img.copyTo(image);
 //       depth_img.copyTo(depth_image);
-        memcpy(image.data, img.data, size_t(depth_start_pos));
-        memcpy(depth_image.data, depth_img.data, size_t(hei * wid));
-        isGrabbed = true;
-        locker.unlock();
+       memcpy(image.data, img.data, size_t(depth_start_pos));
+       memcpy(depth_image.data, depth_img.data, size_t(hei * wid));
+       isGrabbed = true;
+       locker.unlock();
     }
     return true;
 }

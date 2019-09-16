@@ -121,7 +121,7 @@ public:
     static QVector<QString> getAvailableDevice(QString cameraInterface);
 
 signals:
-
+    void sendImage(Mat img, Mat depth_img);
 public slots:
 };
 
