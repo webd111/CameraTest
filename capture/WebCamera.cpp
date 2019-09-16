@@ -11,11 +11,18 @@ WebCamera::WebCamera(WCameraParams _params, QWidget*)
     data_length = _params.data_length;
     channels = _params.channels;
     if(channels == 1)
+    {
         img = Mat::zeros(hei*2, wid, CV_8UC1);
+        image = Mat::zeros(hei*2, wid, CV_8UC1);
+    }
     else if (channels == 3)
+    {
         img = Mat::zeros(hei*2, wid, CV_8UC3);
+        image = Mat::zeros(hei*2, wid, CV_8UC3);
+    }
     // Feiyue add on 20190912
     depth_img = Mat::zeros(hei, wid, CV_8UC1);
+    depth_image = Mat::zeros(hei, wid, CV_8UC1);
     depth_start_pos = 2*hei*wid*channels;
     // Feiyue add on 20190912
 //    qDebug() << depth_img.rows << depth_img.cols << depth_start_pos;
@@ -85,17 +92,13 @@ WebCamera::~WebCamera()
 #endif
 }
 
-bool WebCamera::getImage(Mat& _img, Mat& _depth_img)
+bool WebCamera::isImageGrabbed()
 {
-    if(isGrabbed)
+    if (isGrabbed)
     {
-        QMutexLocker locker(&m_image);
         isGrabbed = false;
-        image.copyTo(_img);
-        depth_image.copyTo(_depth_img);
-//        cvtColor(_img, _img, COLOR_RGB2BGR);
-        locker.unlock();
-        return true;       // Object has been copied
+//        qDebug() << "WebCamera::isImageGrabbed() isGrabbed = true";
+        return true;
     }
     else
         return false;
@@ -133,44 +136,29 @@ bool WebCamera::grabSocket()
     // 解包
     Packet* p_data = (Packet*)buf;
 
-//    qDebug() << "p_data->pos =" << p_data->pos;
-//    qDebug() << "p_data->packet_num =" << p_data->num;
-//    qDebug() << "p_data->length =" << p_data->length;
-//    qDebug()<<hei<<","<<wid<<","<<channels<<endl;
-//    qDebug() << p_data->pos;
     if(int(p_data->pos) < depth_start_pos)
     {
         if(int(p_data->pos + p_data->length) <= depth_start_pos)         ///fasdfsadf
             memcpy(img.data + p_data->pos, p_data->data, p_data->length);
-        else {
+        else
             qDebug() << "change";
-        }
     }
     else
     {
         memcpy(depth_img.data + int(p_data->pos) - depth_start_pos, p_data->data, p_data->length);
     }
 
-//    //
-//    if(int(p_data->pos + p_data->length) >= (hei * wid * channels - 1))
-//    {
-////            qDebug()<<"here"<<endl;
-//        QMutexLocker locker(&m_image);
-//        img.copyTo(image);
-////        qDebug()<<hei<<","<<wid<<","<<channels<<endl;
-////        qDebug() << "img.rows = " << img.rows << "img.cols = " << img.cols;
-//        isGrabbed = true;
-//        locker.unlock();
-//    }
-//    qDebug() << "xxx" << p_data->pos + p_data->length;
-
+    qDebug() << "pos" << p_data->pos;
     if(int(p_data->pos + p_data->length) >= ( hei * wid * (2 * channels + 1) - 1))
     {
-       QMutexLocker locker(&m_image);
-       img.copyTo(image);
-       depth_img.copyTo(depth_image);
-       isGrabbed = true;
-       locker.unlock();
+
+        QMutexLocker locker(&m_image);
+//       img.copyTo(image);
+//       depth_img.copyTo(depth_image);
+        memcpy(image.data, img.data, size_t(depth_start_pos));
+        memcpy(depth_image.data, depth_img.data, size_t(hei * wid));
+        isGrabbed = true;
+        locker.unlock();
     }
     return true;
 }

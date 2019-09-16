@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1090</width>
-    <height>646</height>
+    <width>1100</width>
+    <height>670</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -559,6 +559,9 @@
             <property name="mouseTracking">
              <bool>false</bool>
             </property>
+            <property name="currentIndex">
+             <number>1</number>
+            </property>
             <item>
              <property name="text">
               <string>1</string>
@@ -591,7 +594,7 @@
                <string>单图像</string>
               </property>
               <property name="checked">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -627,6 +630,9 @@
               </property>
               <property name="text">
                <string>双图像+视差图</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -675,7 +681,7 @@
             </property>
             <item>
              <property name="text">
-              <string>256</string>
+              <string>1024</string>
              </property>
             </item>
            </widget>
@@ -2411,7 +2417,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1090</width>
+     <width>1100</width>
      <height>29</height>
     </rect>
    </property>

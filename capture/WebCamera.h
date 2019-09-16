@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QDebug>
+#include <QQueue>
 
 #include "opencv/myopencv.h"
 #include "myvariable.h"
@@ -51,7 +52,6 @@ typedef struct WCameraParams
     int data_length = 0;
     int channels = 1;
 
-
     // Not using "delete" in destructor
     WCameraParams(){}
     ~WCameraParams(){}
@@ -93,25 +93,30 @@ class WebCamera : public QWidget
 
     bool isGrabbed = false;
 
-    int hei = 1080;
-    int wid = 1920;
-    int channels = 1;
+    int hei = 480;
+    int wid = 640;
+    int channels = 3;
     Mat img;
     // Feiyue add
     Mat depth_img;
     // Feiyue add
+
+    QQueue<Mat*> img_queue;      // RGB图像
+    QQueue<Mat*> imgd_queue;     // 深度图图像
+    QMutex m_queue;
 
 public:
     WebCamera(WCameraParams _params, QWidget* parent = nullptr);
     ~WebCamera();
 
     WCameraParams getWParams();
-    bool getImage(Mat& img, Mat& depth_img);             // 获取cv::Mat格式的图像
-//    bool openSocketAdapter();
-//    bool initSocket();
+    bool isImageGrabbed();
     bool sendCommand(char cmd);
     bool grabSocket();
     int imageCheck();
+
+    Mat* imgDequeue();
+    Mat* imgdDequeue();
 
     static QVector<QString> getAvailableDevice(QString cameraInterface);
 

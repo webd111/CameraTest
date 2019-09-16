@@ -103,7 +103,7 @@ void HalconCamera::getCameraInfo()
         for (int i = 0; i < ValueList->Length(); i++)
         {
             list = ValueList[0][i].S();
-            qDebug() << "Camera list:" << list;
+//            qDebug() << "Camera list:" << list;
 #ifdef WIN32
             index = list.indexOf("device:", 0, Qt::CaseSensitive);
             info1.device = QString(list.at(index + 7)).toInt();
@@ -154,35 +154,6 @@ void HalconCamera::getCameraInfo()
             info2.interfaceIP = list.mid(index + 13, index2 - index - 13);
             cameraInfosetGigEVision2.push_back(info2);
         }
-
-//        // Get "UserDefined" info
-//        cameraInfosetUserDefined.clear();
-//        CameraInfoUserDefined info;
-//        pcap_if_t *d;
-//        pcap_if_t *AdapterList;
-//        int AdapterNumber = 0;
-////        AdapterComboBox->clear();
-//        char errbuf[PCAP_ERRBUF_SIZE];
-//        if(pcap_findalldevs(&AdapterList, errbuf) == -1)
-//        {
-//            // Exception handle
-//            qDebug() << errbuf;
-////            AdapterComboBox->addItem(tr("Search failed!"));
-//        }
-//        else
-//        {
-//            for(d = AdapterList; d; d = d->next)
-//            {
-//                ++AdapterNumber;
-//                qDebug() << QString("No: %1").arg(QString::number(AdapterNumber));
-//                qDebug() << QString("name: %1").arg(QString::fromLocal8Bit(d->name));
-//                qDebug() << QString("descriptor: %1").arg(QString::fromLocal8Bit(d->description));
-//                qDebug() << QString("flags: %1").arg(d->flags);
-
-//                // Add adapter items
-//                cameraInfosetUserDefined.push_back(*d);
-//            }
-//        }
     }
     catch (HException &exception)
     {

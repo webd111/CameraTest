@@ -6,10 +6,10 @@ StereoCamera::StereoCamera()
 {
     resetCameraParams();
     rectify(cv::Size(640, 480));      // size of test images
-    std::cout << "R1:" << R1 << std::endl;
-    std::cout << "P1:" << P1 << std::endl;
-    std::cout << "R2:" << R2 << std::endl;
-    std::cout << "P2:" << P2 << std::endl;
+//    std::cout << "R1:" << R1 << std::endl;
+//    std::cout << "P1:" << P1 << std::endl;
+//    std::cout << "R2:" << R2 << std::endl;
+//    std::cout << "P2:" << P2 << std::endl;
 }
 
 void StereoCamera::resetCameraParams()

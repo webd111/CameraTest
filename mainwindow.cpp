@@ -223,9 +223,9 @@ void MainWindow::on_actionCamera1Read_triggered()
             connect(imgAcqThread1, &ImgAcqThread::finished, imgAcqThread1, &QObject::deleteLater);
             connect(imgAcqThread1, &QObject::destroyed, this, &MainWindow::imgAcqThread1Destoryed);
             connect(imgAcqThread1, SIGNAL(ImgCaptured(int)), this, SLOT(updateImage(int)));
-            connect(imgAcqThread1, SIGNAL(ImgAcqTime(int, double)), this, SLOT(updateStatistic(int, double)), Qt::BlockingQueuedConnection);
-            connect(imgAcqThread1, SIGNAL(ImgAcqException(int, QString, HException)), this, SLOT(updateException(int, QString, HException)), Qt::BlockingQueuedConnection);
-            connect(imgAcqThread1, SIGNAL(ImgAcqInfo(int, QString*)), this, SLOT(updateInformation(int, QString*)), Qt::BlockingQueuedConnection);
+            connect(imgAcqThread1, SIGNAL(ImgAcqTime(int, double)), this, SLOT(updateStatistic(int, double)), Qt::QueuedConnection);
+            connect(imgAcqThread1, SIGNAL(ImgAcqException(int, QString, HException)), this, SLOT(updateException(int, QString, HException)), Qt::QueuedConnection);
+            connect(imgAcqThread1, SIGNAL(ImgAcqInfo(int, QString*)), this, SLOT(updateInformation(int, QString*)), Qt::QueuedConnection);
         }
         if(!imgAcqThread1->isRunning())
             imgAcqThread1->start();
@@ -264,9 +264,9 @@ void MainWindow::on_actionCamera2Read_triggered()
             QObject::connect(imgAcqThread2, &ImgAcqThread::finished, imgAcqThread2, &QObject::deleteLater);
             connect(imgAcqThread2, &QObject::destroyed, this, &MainWindow::imgAcqThread2Destoryed);
             connect(imgAcqThread2, SIGNAL(ImgCaptured(int)), this, SLOT(updateImage(int)));
-            connect(imgAcqThread2, SIGNAL(ImgAcqTime(int, double)), this, SLOT(updateStatistic(int, double)), Qt::BlockingQueuedConnection);
-            connect(imgAcqThread2, SIGNAL(ImgAcqException(int, QString, HException)), this, SLOT(updateException(int, QString, HException)), Qt::BlockingQueuedConnection);
-            connect(imgAcqThread2, SIGNAL(ImgAcqInfo(int, QString*)), this, SLOT(updateInformation(int, QString*)), Qt::BlockingQueuedConnection);
+            connect(imgAcqThread2, SIGNAL(ImgAcqTime(int, double)), this, SLOT(updateStatistic(int, double)), Qt::QueuedConnection);
+            connect(imgAcqThread2, SIGNAL(ImgAcqException(int, QString, HException)), this, SLOT(updateException(int, QString, HException)), Qt::QueuedConnection);
+            connect(imgAcqThread2, SIGNAL(ImgAcqInfo(int, QString*)), this, SLOT(updateInformation(int, QString*)), Qt::QueuedConnection);
         }
         if(!imgAcqThread2->isRunning())
             imgAcqThread2->start();
@@ -301,9 +301,9 @@ void MainWindow::on_actionCamera3Read_triggered()
             QObject::connect(imgAcqThread3, &ImgAcqThread::finished, imgAcqThread3, &QObject::deleteLater);
             connect(imgAcqThread3, &QObject::destroyed, this, &MainWindow::imgAcqThread3Destoryed);
             connect(imgAcqThread3, SIGNAL(ImgCaptured(int)), this, SLOT(updateImage(int)));
-            connect(imgAcqThread3, SIGNAL(ImgAcqTime(int, double)), this, SLOT(updateStatistic(int, double)), Qt::BlockingQueuedConnection);
-            connect(imgAcqThread3, SIGNAL(ImgAcqException(int, QString, HException)), this, SLOT(updateException(int, QString, HException)), Qt::BlockingQueuedConnection);
-            connect(imgAcqThread3, SIGNAL(ImgAcqInfo(int, QString*)), this, SLOT(updateInformation(int, QString*)), Qt::BlockingQueuedConnection);
+            connect(imgAcqThread3, SIGNAL(ImgAcqTime(int, double)), this, SLOT(updateStatistic(int, double)), Qt::QueuedConnection);
+            connect(imgAcqThread3, SIGNAL(ImgAcqException(int, QString, HException)), this, SLOT(updateException(int, QString, HException)), Qt::QueuedConnection);
+            connect(imgAcqThread3, SIGNAL(ImgAcqInfo(int, QString*)), this, SLOT(updateInformation(int, QString*)), Qt::QueuedConnection);
         }
         if(!imgAcqThread3->isRunning())
             imgAcqThread3->start();
@@ -330,10 +330,6 @@ void MainWindow::on_actionDepthMapping_triggered()
 
             connect(depthMappingThread, &DepthMappingThread::finished, depthMappingThread, &QObject::deleteLater);
             connect(depthMappingThread, &QObject::destroyed, this, &MainWindow::depthMappingThreadDestoryed);
-//            connect(depthMappingThread, SIGNAL(ImgCaptured(int)), this, SLOT(updateImage(int)));
-//            connect(depthMappingThread, SIGNAL(ImgAcqTime(int, double)), this, SLOT(updateStatistic(int, double)), Qt::BlockingQueuedConnection);
-//            connect(depthMappingThread, SIGNAL(ImgAcqException(int, QString, HException)), this, SLOT(updateException(int, QString, HException)), Qt::BlockingQueuedConnection);
-//            connect(depthMappingThread, SIGNAL(ImgAcqInfo(int, QString*)), this, SLOT(updateInformation(int, QString*)), Qt::BlockingQueuedConnection);
         }
         if(!depthMappingThread->isRunning())
             depthMappingThread->start();
@@ -533,7 +529,7 @@ void MainWindow::updateInformation(int cameraIndex, QString* cameraInfo)
 
 void MainWindow::on_actionSave_triggered()
 {
-    HImage img,img2;
+    HImage img,img2,img3,img4;
     QMutexLocker locker1(m_ptr[0]);
     if(hImageSrc1.IsInitialized())
         img = hImageSrc1;
@@ -546,12 +542,30 @@ void MainWindow::on_actionSave_triggered()
     else
         return;
     locker2.unlock();
-    char* pathA = QString(QString("C:/Users/12257/Desktop/calibration/imgA") + QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
+    QMutexLocker locker3(m_ptr[2]);
+    if(hImageSrc3.IsInitialized())
+        img3 = hImageSrc3;
+    else
+        return;
+    locker3.unlock();
+//    QMutexLocker locker4(m_ptr[3]);
+//    if(hImageSrc4.IsInitialized())
+//        img4 = hImageSrc4;
+//    else
+//        return;
+//    locker4.unlock();
+    char* pathA = QString(QString("C:/Users/12257/Desktop/calibration/imgA") +
+                          QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
     qDebug() << "pathA:" << pathA;
     img.WriteImage("png", 0, pathA);
-    char* pathB = QString(QString("C:/Users/12257/Desktop/calibration/imgB") + QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
+    char* pathB = QString(QString("C:/Users/12257/Desktop/calibration/imgB") +
+                          QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
     qDebug() << "pathB:" << pathB;
     img2.WriteImage("png", 0, pathB);
+    char* pathC = QString(QString("C:/Users/12257/Desktop/calibration/imgC") +
+                          QTime::currentTime().toString("HHmmss") + QString(".png")).toLocal8Bit().data();
+    qDebug() << "pathC:" << pathC;
+    img3.WriteImage("png", 0, pathC);
 }
 
 void MainWindow::on_actionRefresh_triggered()
