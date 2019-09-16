@@ -83,6 +83,7 @@ signals:
     void ImgAcqTime(int cameraIndex, double time);
     void ImgAcqException(int cameraIndex, QString time, HException e);
     void ImgGrabbed();
+    void ImgLossRate(double loss_rate);
 protected:
     void run();         // override run()
 };

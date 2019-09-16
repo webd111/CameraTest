@@ -17,18 +17,24 @@ WebCamera::WebCamera(WCameraParams _params, int _mode, QWidget*)
         img_temp = Mat::zeros(hei*7, wid, CV_8UC1);
         img_output = Mat::zeros(hei*7, wid, CV_8UC1);
         size = hei * wid * 7;
+        cnt_received = 0;
+        cnt_supposed = size / data_length;
     }
     else if(mode == 2)
     {
         img_temp = Mat::zeros(hei*6, wid, CV_8UC1);
         img_output = Mat::zeros(hei*6, wid, CV_8UC1);
         size = hei * wid * 6;
+        cnt_received = 0;
+        cnt_supposed = size / data_length;
     }
     else if(mode == 1)
     {
         img_temp = Mat::zeros(hei*3, wid, CV_8UC1);
         img_output = Mat::zeros(hei*3, wid, CV_8UC1);
         size = hei * wid * 3;
+        cnt_received = 0;
+        cnt_supposed = size / data_length;
     }
 
 #ifdef WIN32
@@ -135,6 +141,8 @@ bool WebCamera::grabSocket()
     if(ret == -1)
         return false;
 
+    cnt_received++;
+
     // 解包
     Packet* p_data = (Packet*)buf;
 
@@ -144,9 +152,10 @@ bool WebCamera::grabSocket()
     {
        QMutexLocker locker(&m_image);
        memcpy(img_output.data, img_temp.data, size);
-//       namedWindow("",WINDOW_NORMAL);
-//       imshow("",img_output);
-//       waitKey();
+       QMutexLocker locker1(&m_loss_rate);
+       loss_rate = 1 - double(cnt_received) / double(cnt_supposed);
+       cnt_received = 0;
+       locker1.unlock();
        isGrabbed = true;
        locker.unlock();
     }
@@ -202,7 +211,8 @@ QVector<QString> WebCamera::getAvailableDevice(QString _cameraInterface)
     return ip;
 }
 
-int WebCamera::imageCheck()
+double WebCamera::getLossRate()
 {
-    return 0;
+    QMutexLocker locker(&m_loss_rate);
+    return loss_rate;
 }

@@ -69,6 +69,7 @@ public slots:
     void updateException(int cameraIndex, QString time, HException e);      // Show exception message
     void updateException(QString time, QString e1, HException e2);
     void updateInformation(int cameraIndex, QString* cameraInfo);
+    void updateLossRate(double);
 
 private slots:
     void on_actionCamera1Read_triggered();           // Read camera1

@@ -186,8 +186,11 @@ void ImgAcqThread::run()
                 if(!webCamera->isImageGrabbed())
                     continue;
 
+                emit ImgLossRate(webCamera->getLossRate());
+
                 time = timer.elapsed();
                 timer.start();
+
 
 //                QMutexLocker locker_queue(&m_queue);
 //                img_queue.enqueue(img);

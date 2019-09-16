@@ -26,7 +26,7 @@
 using namespace std;
 using namespace cv;
 
-const int bufsize = 8192;
+const int bufsize = 2048;
 
 #pragma pack(1)
 // UDP data structure
@@ -89,6 +89,12 @@ class WebCamera : public QWidget
     int mode = 3;
     int size = 0;
 
+    int cnt_received = 0;
+    int cnt_supposed = 1;
+
+    QMutex m_loss_rate;
+    double loss_rate = 0;
+
     QMutex m_image;
     Mat img_temp;
     Mat img_output;
@@ -105,7 +111,7 @@ public:
     bool isImageGrabbed();
     bool sendCommand(char cmd);
     bool grabSocket();
-    int imageCheck();
+    double getLossRate();
 
     Mat* imgDequeue();
     Mat* imgdDequeue();

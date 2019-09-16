@@ -197,19 +197,19 @@ void MainWindow::on_actionCamera1Read_triggered()
                     ui->comboBoxCameraInterface1->currentText() == "GigEVision2")
             {
                 HCameraParams hparams;
-				hparams.cameraIndex = 1;
-				hparams.cameraInterface = ui->comboBoxCameraInterface1->currentText();
-				hparams.device = ui->comboBoxCameraDevice1->currentText();
-				hparams.port = ui->comboBoxCameraPort1->currentText().toInt();
-				hparams.cameraType = ui->comboBoxCameraType1->currentText();
+                hparams.cameraIndex = 1;
+                hparams.cameraInterface = ui->comboBoxCameraInterface1->currentText();
+                hparams.device = ui->comboBoxCameraDevice1->currentText();
+                hparams.port = ui->comboBoxCameraPort1->currentText().toInt();
+                hparams.cameraType = ui->comboBoxCameraType1->currentText();
                 hparams.isConnected = false;
                 imgAcqThread1 = new ImgAcqThread(hparams, mode);
             }
             else if(ui->comboBoxCameraInterface1->currentText() == "UserDefined")
             {
                 WCameraParams wparams;
-				wparams.cameraIndex = 1;
-				wparams.cameraInterface = ui->comboBoxCameraInterface1->currentText();
+                wparams.cameraIndex = 1;
+                wparams.cameraInterface = ui->comboBoxCameraInterface1->currentText();
                 wparams.ip_client = ui->comboBoxCameraDevice1->currentText().toStdString();
                 wparams.port_client = ui->comboBoxCameraPort1->currentText().toUShort();
                 wparams.ip_server = ui->comboBoxCameraType1->currentText().toStdString();
@@ -226,6 +226,7 @@ void MainWindow::on_actionCamera1Read_triggered()
             connect(imgAcqThread1, SIGNAL(ImgAcqTime(int, double)), this, SLOT(updateStatistic(int, double)), Qt::QueuedConnection);
             connect(imgAcqThread1, SIGNAL(ImgAcqException(int, QString, HException)), this, SLOT(updateException(int, QString, HException)), Qt::QueuedConnection);
             connect(imgAcqThread1, SIGNAL(ImgAcqInfo(int, QString*)), this, SLOT(updateInformation(int, QString*)), Qt::QueuedConnection);
+            connect(imgAcqThread1, SIGNAL(ImgLossRate(double)), this, SLOT(updateLossRate(double)), Qt::QueuedConnection);
         }
         if(!imgAcqThread1->isRunning())
             imgAcqThread1->start();
@@ -461,6 +462,11 @@ void MainWindow::updateException(int cameraIndex, QString time, HException e)
 void MainWindow::updateException(QString time, QString e1, HException e2)
 {
 
+}
+
+void MainWindow::updateLossRate(double _rate)
+{
+    ui->doubleSpinBoxCamera1LossRate->setValue(_rate*100);
 }
 
 void MainWindow::updateInformation(int cameraIndex, QString* cameraInfo)

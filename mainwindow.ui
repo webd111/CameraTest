@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1100</width>
-    <height>670</height>
+    <width>1142</width>
+    <height>693</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -229,6 +229,12 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>450</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="font">
          <font>
@@ -2417,7 +2423,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1100</width>
+     <width>1142</width>
      <height>29</height>
     </rect>
    </property>
