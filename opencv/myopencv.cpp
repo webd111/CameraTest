@@ -110,42 +110,69 @@ void IplImageRGBSplitToHImage(cv::Mat& pImage, HImage& img1, HImage& img2)
 {
     int height = pImage.rows;
     int width = pImage.cols;
-    if (3 == pImage.channels())
-    {
-        cv::Mat pImageRed, pImageGreen, pImageBlue;
-        std::vector<cv::Mat> sbgr;
-        split(pImage, sbgr);
-        pImageRed = sbgr[0];
-        pImageGreen = sbgr[1];
-        pImageBlue = sbgr[2];
-        int length = pImage.rows * pImage.cols;
-        uchar *dataBlue = new uchar[length/2];
-        uchar *dataGreen = new uchar[length/2];
-        uchar *dataRed = new uchar[length/2];
-        for (int i = 0; i < 2; ++i) {
-            memcpy(dataRed, pImageRed.data+i*length/2, length/2);
-            memcpy(dataGreen, pImageGreen.data+i*length/2, length/2);
-            memcpy(dataBlue, pImageBlue.data+i*length/2, length/2);
-            if (i==0)
-                img1.GenImage3(HString("byte"), width, height/2, dataRed, dataGreen, dataBlue);
-            else
-                img2.GenImage3(HString("byte"), width, height/2, dataRed, dataGreen, dataBlue);
-        }
-        delete[] dataRed;
-        delete[] dataGreen;
-        delete[] dataBlue;
+    int length = pImage.rows * pImage.cols;
+    cv::Mat pImageRed, pImageGreen, pImageBlue;
+    std::vector<cv::Mat> sbgr;
+    cv::Mat img_rgb = cv::Mat(height/3, width, CV_8UC3, pImage.data);
+    split(img_rgb, sbgr);
+    pImageRed = sbgr[0];
+    pImageGreen = sbgr[1];
+    pImageBlue = sbgr[2];
+    uchar *dataBlue = new uchar[length/2];
+    uchar *dataGreen = new uchar[length/2];
+    uchar *dataRed = new uchar[length/2];
+    for (int i = 0; i < 2; ++i) {
+        memcpy(dataRed, pImageRed.data+i*length/2, length/2);
+        memcpy(dataGreen, pImageGreen.data+i*length/2, length/2);
+        memcpy(dataBlue, pImageBlue.data+i*length/2, length/2);
+        if (i==0)
+            img1.GenImage3(HString("byte"), width, height/2, dataRed, dataGreen, dataBlue);
+        else
+            img2.GenImage3(HString("byte"), width, height/2, dataRed, dataGreen, dataBlue);
     }
-    else if (1 == pImage.channels())
-    {
-        uchar *dataGray = new uchar[width * height / 2];
-        for (int i = 0; i < 2; ++i) {
-            memcpy(dataGray, pImage.data+i * width*height/2, width * height/2);
-            if (i==0)
-                img1.GenImage1(HString("byte"), width, height/2, dataGray);
-            else
-                img2.GenImage1(HString("byte"), width, height/2, dataGray);
-        }
-        delete[] dataGray;
+    delete[] dataRed;
+    delete[] dataGreen;
+    delete[] dataBlue;
+    return;
+}
+
+void IplImageRGBDSplitToHImage(cv::Mat& pImage, HImage& img1, HImage& img2, HImage& imgd)
+{
+    int height = pImage.rows/7;
+    int width = pImage.cols;
+    int length_std = height * width;
+    // Split RGB
+//    qDebug() << "Split RGB";
+    cv::Mat pImageRed, pImageGreen, pImageBlue;
+    std::vector<cv::Mat> sbgr;
+    cv::Mat img_rgb = cv::Mat::zeros(height*2, width, CV_8UC3);
+    memcpy(img_rgb.data, pImage.data, length_std*6);
+    split(img_rgb, sbgr);
+    pImageRed = sbgr[0];
+    pImageGreen = sbgr[1];
+    pImageBlue = sbgr[2];
+    uchar *dataBlue = new uchar[length_std];
+    uchar *dataGreen = new uchar[length_std];
+    uchar *dataRed = new uchar[length_std];
+    for (int i = 0; i < 2; ++i) {
+        memcpy(dataRed, pImageRed.data+i*length_std, length_std);
+        memcpy(dataGreen, pImageGreen.data+i*length_std, length_std);
+        memcpy(dataBlue, pImageBlue.data+i*length_std, length_std);
+        if (i==0)
+            img1.GenImage3(HString("byte"), width, height, dataRed, dataGreen, dataBlue);
+        else
+            img2.GenImage3(HString("byte"), width, height, dataRed, dataGreen, dataBlue);
     }
+    delete[] dataRed;
+    delete[] dataGreen;
+    delete[] dataBlue;
+    // Split D
+//    qDebug() << "Split RGB";
+    cv::Mat img_depth = cv::Mat(pImage, cv::Range(height*6, height*7));
+    uchar *dataGray = new uchar[length_std];
+    memcpy(dataGray, img_depth.data, length_std);
+    imgd.GenImage1(HString("byte"), width, height, dataGray);
+    delete[] dataGray;
+
     return;
 }

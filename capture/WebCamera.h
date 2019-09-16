@@ -65,14 +65,6 @@ class WebCamera : public QWidget
 {
     Q_OBJECT
 
-    Mat image;
-    Mat image_std;
-
-    // Feiyue add on 20190912
-    Mat depth_image;
-    int depth_start_pos;
-    // Feiyue add on 20190912
-
     // Camera parameters
     int cameraIndex;
     QString cameraInterface;
@@ -86,8 +78,6 @@ class WebCamera : public QWidget
     int sock;
 #endif
 
-    QMutex m_image;
-
     int data_length = bufsize - 8;
     char buf[bufsize];
 
@@ -96,17 +86,19 @@ class WebCamera : public QWidget
     int hei = 480;
     int wid = 640;
     int channels = 3;
-    Mat img;
-    // Feiyue add
-    Mat depth_img;
-    // Feiyue add
+    int mode = 3;
+    int size = 0;
 
-    QQueue<Mat*> img_queue;      // RGB图像
-    QQueue<Mat*> imgd_queue;     // 深度图图像
-    QMutex m_queue;
+    QMutex m_image;
+    Mat img_temp;
+    Mat img_output;
+
+//    QQueue<Mat*> img_queue;      // RGB图像
+//    QQueue<Mat*> imgd_queue;     // 深度图图像
+//    QMutex m_queue;
 
 public:
-    WebCamera(WCameraParams _params, QWidget* parent = nullptr);
+    WebCamera(WCameraParams _params, int mode, QWidget* parent = nullptr);
     ~WebCamera();
 
     WCameraParams getWParams();
@@ -121,7 +113,7 @@ public:
     static QVector<QString> getAvailableDevice(QString cameraInterface);
 
 signals:
-    void sendImage(Mat img, Mat depth_img);
+    void sendImage(Mat img);
 public slots:
 };
 

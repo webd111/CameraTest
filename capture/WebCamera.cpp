@@ -1,6 +1,6 @@
 ﻿#include "WebCamera.h"
 
-WebCamera::WebCamera(WCameraParams _params, QWidget*)
+WebCamera::WebCamera(WCameraParams _params, int _mode, QWidget*)
 {
     qDebug() << "WebCamera::WebCamera()";
     cameraIndex = _params.cameraIndex;
@@ -10,23 +10,26 @@ WebCamera::WebCamera(WCameraParams _params, QWidget*)
     wid = _params.width;
     data_length = _params.data_length;
     channels = _params.channels;
-    if(channels == 1)
-    {
-        img = Mat::zeros(hei*2, wid, CV_8UC1);
-        image = Mat::zeros(hei*2, wid, CV_8UC1);
-    }
-    else if (channels == 3)
-    {
-        img = Mat::zeros(hei*2, wid, CV_8UC3);
-        image = Mat::zeros(hei*2, wid, CV_8UC3);
-    }
-    // Feiyue add on 20190912
-    depth_img = Mat::zeros(hei, wid, CV_8UC1);
-    depth_image = Mat::zeros(hei, wid, CV_8UC1);
-    depth_start_pos = 2*hei*wid*channels;
-    // Feiyue add on 20190912
-//    qDebug() << depth_img.rows << depth_img.cols << depth_start_pos;
+    mode = _mode;
 
+    if (mode == 3)
+    {
+        img_temp = Mat::zeros(hei*7, wid, CV_8UC1);
+        img_output = Mat::zeros(hei*7, wid, CV_8UC1);
+        size = hei * wid * 7;
+    }
+    else if(mode == 2)
+    {
+        img_temp = Mat::zeros(hei*6, wid, CV_8UC1);
+        img_output = Mat::zeros(hei*6, wid, CV_8UC1);
+        size = hei * wid * 6;
+    }
+    else if(mode == 1)
+    {
+        img_temp = Mat::zeros(hei*3, wid, CV_8UC1);
+        img_output = Mat::zeros(hei*3, wid, CV_8UC1);
+        size = hei * wid * 3;
+    }
 
 #ifdef WIN32
     WORD sockVersion = MAKEWORD(2, 2);
@@ -97,9 +100,8 @@ bool WebCamera::isImageGrabbed()
     if (isGrabbed)
     {
         isGrabbed = false;
-//        qDebug() << "WebCamera::isImageGrabbed() isGrabbed = true";
         QMutexLocker locker(&m_image);
-        emit sendImage(image, depth_image);
+        emit sendImage(img_output);
         locker.unlock();
         return true;
     }
@@ -131,34 +133,20 @@ bool WebCamera::grabSocket()
     int ret = recvfrom(sock, buf, data_length+8, 0, (sockaddr*)&addr_server, &serverAddrLen);
 #endif
     if(ret == -1)
-    {
-//        qDebug() << "ret = " << ret;
         return false;
-    }
 
     // 解包
     Packet* p_data = (Packet*)buf;
 
-//    qDebug() << p_data->pos;
-    if(int(p_data->pos) < depth_start_pos)
-    {
-        if(int(p_data->pos + p_data->length) <= depth_start_pos)         ///fasdfsadf
-            memcpy(img.data + p_data->pos, p_data->data, p_data->length);
-        else
-            qDebug() << "change";
-    }
-    else
-    {
-        memcpy(depth_img.data + int(p_data->pos) - depth_start_pos, p_data->data, p_data->length);
-    }
+    memcpy(img_temp.data + p_data->pos, p_data->data, p_data->length);
 
-    if(int(p_data->pos + p_data->length) >= ( hei * wid * (2 * channels + 1) - 1))
+    if(int(p_data->pos + p_data->length) >= (size - 1))
     {
        QMutexLocker locker(&m_image);
-//       img.copyTo(image);
-//       depth_img.copyTo(depth_image);
-       memcpy(image.data, img.data, size_t(depth_start_pos));
-       memcpy(depth_image.data, depth_img.data, size_t(hei * wid));
+       memcpy(img_output.data, img_temp.data, size);
+//       namedWindow("",WINDOW_NORMAL);
+//       imshow("",img_output);
+//       waitKey();
        isGrabbed = true;
        locker.unlock();
     }
@@ -216,22 +204,5 @@ QVector<QString> WebCamera::getAvailableDevice(QString _cameraInterface)
 
 int WebCamera::imageCheck()
 {
-    Mat img_temp;
-    int cnt = 0;
-    QMutexLocker locker(&m_image);
-    image.copyTo(img_temp);
-    m_image.unlock();
-    for(int i = 0; i < img_temp.rows; ++i)
-    {
-        auto ptr = img_temp.ptr(i);
-        auto ptr_std = image_std.ptr(i);
-        for(int j = 0; j < img_temp.cols; ++j)
-        {
-            if(*ptr != *ptr_std)
-                cnt++;
-            ++ptr;
-            ++ptr_std;
-        }
-    }
-    return cnt;
+    return 0;
 }

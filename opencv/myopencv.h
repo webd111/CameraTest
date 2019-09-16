@@ -1,6 +1,8 @@
 #ifndef MYOPENCV_H
 #define MYOPENCV_H
 
+#include <QDebug>
+
 #ifdef WIN32
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -19,5 +21,6 @@ extern HImage IplImageToHImage(cv::Mat& pImage);
 extern cv::Mat HImageToIplImage(HImage& img);
 extern HImage IplImageRGBToHImage(cv::Mat& pImage);
 extern void IplImageRGBSplitToHImage(cv::Mat& pImage, HImage& img1, HImage& img2);
+extern void IplImageRGBDSplitToHImage(cv::Mat& pImage, HImage& img1, HImage& img2, HImage& imgd);
 
 #endif

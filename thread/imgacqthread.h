@@ -38,7 +38,7 @@ public:
 
 signals:
 public slots:
-    void getImage(Mat img, Mat depth_img);            //
+    void getImage(Mat img);            //
 };
 
 class ImgAcqThread : public QThread

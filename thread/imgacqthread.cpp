@@ -11,8 +11,6 @@ ImgAcqThread::ImgAcqThread(HCameraParams _params, int _mode)
     himage = hImage_ptr[cameraIndex-1];
     hwindowhandle = hv_WindowHandle_ptr[cameraIndex-1];
     m[cameraIndex-1] = m_ptr[cameraIndex-1];
-
-//    qDebug() << QString("New ImgAcqThread is constructed with cameraIndex = %1, cameraInterface = %2, device = %3, port = %4, cameraType = %5").arg(cameraIndex).arg(cameraInterface).arg(device).arg(port).arg(cameraType);
 }
 
 ImgAcqThread::ImgAcqThread(WCameraParams _params, int _mode)
@@ -21,14 +19,14 @@ ImgAcqThread::ImgAcqThread(WCameraParams _params, int _mode)
     cameraIndex = _params.cameraIndex;
     mode = _mode;
 
-    webCamera = new WebCamera(_params);
+    webCamera = new WebCamera(_params, _mode);
     imgHandler = new ImageHandler(_mode);
     imgHandler->moveToThread(&imgHandleThread);
     qRegisterMetaType< cv::Mat >("Mat");
-    connect(webCamera, SIGNAL(sendImage(Mat, Mat)), imgHandler,
-            SLOT(getImage(Mat, Mat)), Qt::QueuedConnection);     // 在子线程中运行
-//    connect(webCamera, SIGNAL(sendImage(Mat, Mat)), imgHandler,
-//            SLOT(getImage(Mat, Mat)), Qt::DirectConnection);     // 不在子线程中运行
+    connect(webCamera, SIGNAL(sendImage(Mat)), imgHandler,
+            SLOT(getImage(Mat)), Qt::QueuedConnection);     // 在子线程中运行
+//    connect(webCamera, SIGNAL(sendImage(Mat)), imgHandler,
+//            SLOT(getImage(Mat)), Qt::DirectConnection);     // 不在子线程中运行
     imgHandleThread.start();
 
 //    himage = hImage_ptr[cameraIndex-1];
@@ -187,6 +185,7 @@ void ImgAcqThread::run()
 //                webCamera->sendCommand(0x02);           // cmd: received
                 if(!webCamera->isImageGrabbed())
                     continue;
+
                 time = timer.elapsed();
                 timer.start();
 
@@ -222,34 +221,13 @@ ImageHandler::~ImageHandler()
 
 }
 
-void ImageHandler::getImage(cv::Mat img, cv::Mat depth_img)
+void ImageHandler::getImage(cv::Mat img)
 {
-    QMutexLocker locker1(m_ptr[0]);
-    QMutexLocker locker2(m_ptr[1]);
-    QMutexLocker locker3(m_ptr[2]);
-
     // 如果为单视图图像，19-09-11
     if (mode == 1)
     {
+        QMutexLocker locker1(m_ptr[0]);
         *hImage_ptr[0] = IplImageRGBToHImage(img);         // 输入图像保持RGB结构，cvMat转HImage中进行了修改，可以直接将RGB转为HImage
-    }
-    else if (mode == 2)
-    {
-        // 如果为左右双视图图像，19-09-11
-        hImage_ptr[0]->Clear();
-        hImage_ptr[1]->Clear();
-        IplImageRGBSplitToHImage(img,*hImage_ptr[0],*hImage_ptr[1]);
-    }
-    else if (mode == 3)
-    {
-//        qDebug()<<"here";
-        // 如果为左右双视图+深度图图像，19-09-11
-        hImage_ptr[0]->Clear();
-        hImage_ptr[1]->Clear();
-        hImage_ptr[2]->Clear();
-        IplImageRGBSplitToHImage(img,*hImage_ptr[0],*hImage_ptr[1]);
-        *hImage_ptr[2] = IplImageRGBToHImage(depth_img);
-    }
 #ifdef WIN32
     for(int i = 0; i < mode; ++i)
     {
@@ -258,9 +236,55 @@ void ImageHandler::getImage(cv::Mat img, cv::Mat depth_img)
 #elif __linux__
     emit ImgCaptured(cameraIndex);
 #endif
-    locker1.unlock();
-    locker2.unlock();
-    locker3.unlock();
+        locker1.unlock();
+    }
+    else if (mode == 2)
+    {
+        QMutexLocker locker1(m_ptr[0]);
+        QMutexLocker locker2(m_ptr[1]);
+        // 如果为左右双视图图像，19-09-11
+        hImage_ptr[0]->Clear();
+        hImage_ptr[1]->Clear();
+        IplImageRGBSplitToHImage(img,*hImage_ptr[0],*hImage_ptr[1]);
+#ifdef WIN32
+    for(int i = 0; i < mode; ++i)
+    {
+        DispImage(*hImage_ptr[i], *hv_WindowHandle_ptr[i]);
+    }
+#elif __linux__
+    emit ImgCaptured(cameraIndex);
+#endif
+        locker1.unlock();
+        locker2.unlock();
+    }
+    else if (mode == 3)
+    {
+        QMutexLocker locker1(m_ptr[0]);
+        QMutexLocker locker2(m_ptr[1]);
+        QMutexLocker locker3(m_ptr[2]);
+//        qDebug()<<"here";
+        // 如果为左右双视图+深度图图像，19-09-11
+        hImage_ptr[0]->Clear();
+        hImage_ptr[1]->Clear();
+        hImage_ptr[2]->Clear();
+//        namedWindow("",WINDOW_NORMAL);
+//        imshow("",img);
+//        waitKey();
+        IplImageRGBDSplitToHImage(img,*hImage_ptr[0],*hImage_ptr[1],*hImage_ptr[2]);
+#ifdef WIN32
+    for(int i = 0; i < mode; ++i)
+    {
+        DispImage(*hImage_ptr[i], *hv_WindowHandle_ptr[i]);
+    }
+#elif __linux__
+    emit ImgCaptured(cameraIndex);
+#endif
+        locker1.unlock();
+        locker2.unlock();
+        locker3.unlock();
+    }
+
+
 }
 
 
