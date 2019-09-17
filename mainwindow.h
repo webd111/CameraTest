@@ -16,6 +16,7 @@
 #include <QMessageBox>
 #include <QTableView>
 #include <QStandardItemModel>
+#include <QThread>
 
 #include "myvariable.h"
 #include "halcon/myhalcon.h"

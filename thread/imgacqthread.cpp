@@ -27,7 +27,7 @@ ImgAcqThread::ImgAcqThread(WCameraParams _params, int _mode)
             SLOT(getImage(Mat)), Qt::QueuedConnection);     // 在子线程中运行
 //    connect(webCamera, SIGNAL(sendImage(Mat)), imgHandler,
 //            SLOT(getImage(Mat)), Qt::DirectConnection);     // 不在子线程中运行
-    imgHandleThread.start();
+    imgHandleThread.start(/*Priority::IdlePriority*/);
 
 //    himage = hImage_ptr[cameraIndex-1];
 //    hwindowhandle = hv_WindowHandle_ptr[cameraIndex-1];

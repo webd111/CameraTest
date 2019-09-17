@@ -148,7 +148,7 @@ bool WebCamera::grabSocket()
 
     memcpy(img_temp.data + p_data->pos, p_data->data, p_data->length);
 
-    if(int(p_data->pos + p_data->length) >= (size - 1))
+    if(int(p_data->pos + p_data->length) == (size/* - 1*/))
     {
        QMutexLocker locker(&m_image);
        memcpy(img_output.data, img_temp.data, size);
