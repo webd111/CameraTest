@@ -151,6 +151,31 @@ void IplImageRGBDSplitToHImage(cv::Mat& pImage, HImage& img1, HImage& img2, HIma
     pImageRed = sbgr[0];
     pImageGreen = sbgr[1];
     pImageBlue = sbgr[2];
+
+//    // White Balance
+//    //求原始图像的RGB分量的均值
+//    double R, G, B;
+//    B = mean(pImageBlue)[0];
+//    G = mean(pImageGreen)[0];
+//    R = mean(pImageRed)[0];
+
+//    qDebug()  << "Gray" <<  R*0.299 + G*0.587 + B*0.114;
+
+//    //需要调整的RGB分量的增益
+//    double KR, KG, KB;
+//    KB = (R + G + B) / (3 * B);
+//    KG = (R + G + B) / (3 * G);
+//    KR = (R + G + B) / (3 * R);
+
+//    qDebug() << "KB, KG, KR" << KB << KG << KR;
+    double KR = 1.3, KG = 0.9, KB = 0.9;
+
+    //调整RGB三个通道各自的值
+    pImageRed = pImageRed * KR;
+    pImageGreen = pImageGreen * KG;
+    pImageBlue = pImageBlue * KB;
+    // White Balance
+
     uchar *dataBlue = new uchar[length_std];
     uchar *dataGreen = new uchar[length_std];
     uchar *dataRed = new uchar[length_std];

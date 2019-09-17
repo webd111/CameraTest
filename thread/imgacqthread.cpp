@@ -274,6 +274,8 @@ void ImageHandler::getImage(cv::Mat img)
 //        imshow("",img);
 //        waitKey();
         IplImageRGBDSplitToHImage(img,*hImage_ptr[0],*hImage_ptr[1],*hImage_ptr[2]);
+        *hImage_ptr[2] = hImage_ptr[2]->ScaleImage(3, 0);
+        *hImage_ptr[2] = hImage_ptr[2]->MedianImage("square", 5, "continued");
 #ifdef WIN32
     for(int i = 0; i < mode; ++i)
     {
