@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1152</width>
-    <height>714</height>
+    <width>1142</width>
+    <height>646</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -583,7 +583,7 @@
           <item row="5" column="0" colspan="4">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <property name="sizeConstraint">
-             <enum>QLayout::SetMaximumSize</enum>
+             <enum>QLayout::SetDefaultConstraint</enum>
             </property>
             <item>
              <widget class="QRadioButton" name="radioButtonSingleView">
@@ -2423,8 +2423,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1152</width>
-     <height>29</height>
+     <width>1142</width>
+     <height>23</height>
     </rect>
    </property>
    <property name="font">
