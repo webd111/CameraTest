@@ -293,7 +293,7 @@ void DispImage(HImage &img, HTuple &win)
 //        SetHcppInterfaceStringEncodingIsUtf8(false);
 
         HTuple HOIwidth, HOIheight;
-        try {ClearWindow(win);} catch (HException &){}
+//        try {ClearWindow(win);} catch (HException &){}
         GetImageSize(img, &HOIwidth, &HOIheight);
         SetPart(win, 0, 0, HOIheight - 1, HOIwidth - 1);
         DispObj(img, win);

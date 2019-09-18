@@ -6,10 +6,10 @@ StereoCamera::StereoCamera()
 {
     resetCameraParams();
     rectify(cv::Size(640, 480));      // size of test images
-//    std::cout << "R1:" << R1 << std::endl;
-//    std::cout << "P1:" << P1 << std::endl;
-//    std::cout << "R2:" << R2 << std::endl;
-//    std::cout << "P2:" << P2 << std::endl;
+    std::cout << "R1:" << R1 << std::endl;
+    std::cout << "P1:" << P1 << std::endl;
+    std::cout << "R2:" << R2 << std::endl;
+    std::cout << "P2:" << P2 << std::endl;
 }
 
 void StereoCamera::resetCameraParams()
@@ -81,8 +81,8 @@ void StereoCamera::undist(int interpMethod)
     for (int j = 0; j < canvas.rows; j += 60)
         line(canvas, cv::Point(0, j), cv::Point(canvas.cols, j), cv::Scalar(0, 255, 0), 1, 8);
 //    namedWindow("RectifiedStereoCamera", WINDOW_AUTOSIZE);
-    namedWindow("RectifiedStereoCamera", WINDOW_NORMAL);
-    imshow("RectifiedStereoCamera", canvas);
+//    namedWindow("RectifiedStereoCamera", WINDOW_NORMAL);
+//    imshow("RectifiedStereoCamera", canvas);
     waitKey(1);
 }
 

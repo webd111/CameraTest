@@ -168,7 +168,7 @@ void IplImageRGBDSplitToHImage(cv::Mat& pImage, HImage& img1, HImage& img2, HIma
 //    KR = (R + G + B) / (3 * R);
 
 //    qDebug() << "KB, KG, KR" << KB << KG << KR;
-    double KR = 1.3, KG = 0.9, KB = 0.9;
+    double KR = 1.1, KG = 0.9, KB = 0.9;
 
     //调整RGB三个通道各自的值
     pImageRed = pImageRed * KR;
@@ -201,3 +201,91 @@ void IplImageRGBDSplitToHImage(cv::Mat& pImage, HImage& img1, HImage& img2, HIma
 
     return;
 }
+//void IplImageRGBDSplitToHImage(cv::Mat& pImage, HImage& img1, HImage& img2, HImage& imgd)
+//{
+//    int height = pImage.rows/3;
+//    int width = pImage.cols;
+//    size_t length_std = size_t(height * width);
+//    cv::Mat img_left = cv::Mat(pImage, cv::Range(height*0, height*1));
+//    uchar *dataLeft = new uchar[length_std];
+//    memcpy(dataLeft, img_left.data, length_std);
+//    img1.GenImage1(HString("byte"), width, height, dataLeft);
+//    delete[] dataLeft;
+
+//    cv::Mat img_right = cv::Mat(pImage, cv::Range(height*1, height*2));
+//    uchar *dataRight = new uchar[length_std];
+//    memcpy(dataRight, img_right.data, length_std);
+//    img2.GenImage1(HString("byte"), width, height, dataRight);
+//    delete[] dataRight;
+
+//    cv::Mat img_depth = cv::Mat(pImage, cv::Range(height*2, height*3));
+//    uchar *dataGray = new uchar[length_std];
+//    memcpy(dataGray, img_depth.data, length_std);
+//    imgd.GenImage1(HString("byte"), width, height, dataGray);
+//    delete[] dataGray;
+
+////    cv::Mat img_depth = cv::Mat(pImage, cv::Range(height*2, height*3));
+////    uchar *dataGray = new uchar[length_std];
+////    memcpy(dataGray, img_depth.data, length_std);
+////    imgd.GenImage1(HString("byte"), width, height, dataGray);
+////    delete[] dataGray;
+////    // Split RGB
+//////    qDebug() << "Split RGB";
+////    cv::Mat pImageRed, pImageGreen, pImageBlue;
+////    std::vector<cv::Mat> sbgr;
+////    cv::Mat img_rgb = cv::Mat::zeros(height*2, width, CV_8UC3);
+////    memcpy(img_rgb.data, pImage.data, length_std*6);
+////    split(img_rgb, sbgr);
+////    pImageRed = sbgr[0];
+////    pImageGreen = sbgr[1];
+////    pImageBlue = sbgr[2];
+
+//////    // White Balance
+//////    //求原始图像的RGB分量的均值
+//////    double R, G, B;
+//////    B = mean(pImageBlue)[0];
+//////    G = mean(pImageGreen)[0];
+//////    R = mean(pImageRed)[0];
+
+//////    qDebug()  << "Gray" <<  R*0.299 + G*0.587 + B*0.114;
+
+//////    //需要调整的RGB分量的增益
+//////    double KR, KG, KB;
+//////    KB = (R + G + B) / (3 * B);
+//////    KG = (R + G + B) / (3 * G);
+//////    KR = (R + G + B) / (3 * R);
+
+//////    qDebug() << "KB, KG, KR" << KB << KG << KR;
+////    double KR = 1.1, KG = 0.9, KB = 0.9;
+
+////    //调整RGB三个通道各自的值
+////    pImageRed = pImageRed * KR;
+////    pImageGreen = pImageGreen * KG;
+////    pImageBlue = pImageBlue * KB;
+////    // White Balance
+
+////    uchar *dataBlue = new uchar[length_std];
+////    uchar *dataGreen = new uchar[length_std];
+////    uchar *dataRed = new uchar[length_std];
+////    for (int i = 0; i < 2; ++i) {
+////        memcpy(dataRed, pImageRed.data+i*length_std, length_std);
+////        memcpy(dataGreen, pImageGreen.data+i*length_std, length_std);
+////        memcpy(dataBlue, pImageBlue.data+i*length_std, length_std);
+////        if (i==0)
+////            img1.GenImage3(HString("byte"), width, height, dataRed, dataGreen, dataBlue);
+////        else
+////            img2.GenImage3(HString("byte"), width, height, dataRed, dataGreen, dataBlue);
+////    }
+////    delete[] dataRed;
+////    delete[] dataGreen;
+////    delete[] dataBlue;
+////    // Split D
+//////    qDebug() << "Split RGB";
+////    cv::Mat img_depth = cv::Mat(pImage, cv::Range(height*6, height*7));
+////    uchar *dataGray = new uchar[length_std];
+////    memcpy(dataGray, img_depth.data, length_std);
+////    imgd.GenImage1(HString("byte"), width, height, dataGray);
+////    delete[] dataGray;
+
+//    return;
+//}
